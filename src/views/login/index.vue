@@ -8,21 +8,21 @@
         <div class="form-container">
           <Form ref="loginForm" :model="form" :rules="rules" autocomplete="on">
             <FormItem prop="username">
-              <Input v-model="form.username" placeholder="Username" autocomplete="on">
+              <Input v-model="form.username" v-bind:placeholder="translateKey('username')" autocomplete="on">
                 <span slot="prepend">
                   <Icon :size="16" type="person"></Icon>
                 </span>
               </Input>
             </FormItem>
             <FormItem prop="password">
-              <Input type="password" v-model="form.password" placeholder="Password" autocomplete="on">
+              <Input type="password" v-model="form.password" v-bind:placeholder="translateKey('password')" autocomplete="on">
                 <span slot="prepend">
                   <Icon :size="14" type="locked"></Icon>
                 </span>
               </Input>
             </FormItem>
             <FormItem>
-              <Button @click="handleSubmit" type="primary" :loading="loading" long>Login</Button>
+              <Button @click="handleSubmit" type="primary" :loading="loading" long>{{translateKey('login_btn')}}</Button>
             </FormItem>
           </Form>
         </div>
@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import imgLogo from '@/assets/logo.png'
+import imgLogo from '@/assets/logo_images/logo.png'
 
 export default {
   data () {
@@ -44,20 +44,25 @@ export default {
         passowrd: ''
       },
       rules: {
-        username: [{ required: true, message: 'Username不能為空', trigger: 'blur' }],
-        password: [{ required: true, message: 'Password不能為空', trigger: 'blur' }]
+        username: [{ required: true, message: 'Please fill in the user name', trigger: 'blur' }],
+        password: [
+          { required: true, message: 'Please fill in the password.', trigger: 'blur' },
+          { type: 'string', min: 6, message: 'The password length cannot be less than 6 bits', trigger: 'blur' }
+        ]
       }
     }
   },
   methods: {
+    translateKey (key) {
+      return this.$t('login.' + key)
+    },
     handleSubmit () {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
-          console.log('login')
           this.loading = true
           this.$store.dispatch('LoginByUser', this.form).then(() => {
             this.loading = false
-            this.$router.push({ name: 'Test' })
+            this.$router.push({ path: '/' })
           })
         }
       })
