@@ -16,7 +16,7 @@ module.exports = function (config) {
     customLaunchers: {
       Chrome_travis_ci: {
         base: 'Chrome',
-        flag: ['--no-sandbox']
+        flags: ['--no-sandbox']
       }
     },
     frameworks: ['mocha', 'sinon-chai', 'phantomjs-shim'],
