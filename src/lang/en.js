@@ -61,7 +61,8 @@ export default {
     setting_dnsDomain: 'Kubernetes DNS Domain',
     setting_networkPlugin: 'Kubernetes CNI Network Plugin',
     setting_podNetworkCIDR: 'Kubernetes Pod Network CIDR',
-    setting_serviceNetworkCIDR: 'Kubernetes Service Network CIDR'
+    setting_serviceNetworkCIDR: 'Kubernetes Service Network CIDR',
+    setting_versionName: 'Ceph Version Name'
   },
   content: {
     settingKubernetes: 'Kubernetes Setting',

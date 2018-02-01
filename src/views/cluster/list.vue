@@ -1,6 +1,6 @@
 <template>
   <div class="cluster-container">
-    <Spin size="large" v-if="isLoading"></Spin>
+    <Spin size="large" v-if="isLoading" style="display: table; margin: 20% auto;"></Spin>
 
     <div v-if="!isLoading && clusterList === null" class="empty-wrapper">
       <img class="pic-empty" :src="emptyImage" alt="no cluster">
@@ -54,7 +54,7 @@
 
 <script>
 import emptyImage from '@/assets/Empty_images/empty.png'
-import { fetchClustersList } from '@/api/kubernetesCRD'
+import { fetchClustersList, fetchDefaults } from '@/api/kubernetesCRD'
 
 const deployTypeOptions = [
   { key: 'kubernetes' },
@@ -70,8 +70,7 @@ export default {
       clusterList: null,
       isLoading: true,
       temp: {
-        name: '',
-        type: ''
+        name: ''
       },
       dialogFormVisible: false,
       rules: {
@@ -95,14 +94,7 @@ export default {
         }
       })
     },
-    resetTemp () {
-      this.temp = {
-        name: '',
-        type: ''
-      }
-    },
     handleCreate () {
-      this.resetTemp()
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].resetFields()
@@ -120,6 +112,13 @@ export default {
       })
     },
     getClustersList () {
+      fetchDefaults('ikm').then(result => {
+        console.log(result.spec)
+        for (var key in result.spec) {
+          this.temp[key] = result.spec[key].default
+        }
+        console.log(this.temp)
+      })
       fetchClustersList().then(result => {
         this.isLoading = false
         if (result.items.length > 0) {

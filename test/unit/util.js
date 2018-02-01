@@ -1,7 +1,10 @@
 import Vue from 'vue'
 import iView from 'iview'
+import i18n from '@/lang'
 
-Vue.use(iView)
+Vue.use(iView, {
+  i18n: (key, value) => i18n.t(key, value)
+})
 
 let id = 0
 
@@ -54,7 +57,7 @@ exports.createTest = function (Compo, propsData = {}, mounted = false) {
   }
   const elm = createElm()
   const Ctor = Vue.extend(Compo)
-  return new Ctor({ propsData }).$mount(mounted === false ? null : elm)
+  return new Ctor({ i18n, propsData }).$mount(mounted === false ? null : elm)
 }
 
 /**
@@ -76,7 +79,7 @@ exports.dateToString = function (d) {
 }
 
 /**
- * 触发一个事件
+ * Trigger a event
  * mouseenter, mouseleave, mouseover, keyup, change, click 等
  * @param  {Element} elm
  * @param  {String} name

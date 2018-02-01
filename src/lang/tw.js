@@ -61,7 +61,8 @@ export default {
     setting_dnsDomain: 'Kubernetes DNS Domain',
     setting_networkPlugin: 'Kubernetes CNI 網路 Plugin',
     setting_podNetworkCIDR: 'Kubernetes Pod 的網路 CIDR',
-    setting_serviceNetworkCIDR: 'Kubernetes Service 的網路 CIDR'
+    setting_serviceNetworkCIDR: 'Kubernetes Service 的網路 CIDR',
+    setting_versionName: 'Ceph 版本名稱'
   },
   content: {
     settingKubernetes: 'Kubernetes 設定',

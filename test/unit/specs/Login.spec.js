@@ -5,7 +5,9 @@ describe('login.vue', () => {
   let vm
 
   beforeEach(() => {
-    vm = createTest(Login)
+    vm = createTest(Login, true, {
+      test: 100
+    })
   })
 
   afterEach(() => {

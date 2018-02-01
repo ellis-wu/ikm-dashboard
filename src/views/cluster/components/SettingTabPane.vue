@@ -20,6 +20,7 @@
         </FormItem>
       </Form>
     </template>
+    <div class="page-group__title">Extra</div>
   </div>
 </template>
 

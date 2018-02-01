@@ -16,18 +16,11 @@
         <div class="info-value">{{clusterData.spec.type}}</div>
         <div class="info-title">{{translateKey('content', 'clusterCardProvisioner')}}</div>
         <div class="info-value">{{clusterData.spec.provisionerSpec.name}}</div>
-        <template v-for="(item, key) in clusterData.spec.cephSpec">
-          <div class="info-title">{{translateKey('content', key)}}</div>
-          <div class="info-value">{{item}}</div>
-        </template>
-        <template v-for="(item, key) in clusterData.spec.kubernetesSpec" v-if="key !== 'addons'">
-          <div class="info-title">{{translateKey('content', key)}}</div>
-          <div class="info-value">{{item}}</div>
-        </template>
       </Col>
       <Col span="12">
         <div class="info-panel__title">Nodes</div>
         <div v-if="nodeNumber === 0" style="font-size: 14px; font-weight: 400; line-height: 17px;">No nodes found in this environment. Please add nodes in the Nodes tab and try again.</div>
+        <div v-else>You have Nodes WIP</div>
       </Col>
     </Row>
   </div>
@@ -43,7 +36,7 @@ export default {
   },
   data () {
     return {
-      nodeNumber: 0
+      nodeNumber: 1
     }
   },
   methods: {
@@ -76,10 +69,15 @@ export default {
     }
   }
   .info-panel {
+    background: #e7f0f2;
+    width: calc(100% + 32px);
+    margin-left: -16px;
+    padding: 10px 16px;
     &__title {
       font-size: 24px;
       font-weight: bold;
       color: #525960;
+      // color: #fff;
       margin-bottom: 10px;
     }
     .info-title {
@@ -87,6 +85,7 @@ export default {
       height: auto;
       min-height: 30px;
       line-height: 17px;
+      // color: #fff;
       font-size: 14px;
       font-weight: 600;
       float: left;
@@ -97,6 +96,7 @@ export default {
       height: auto;
       min-height: 30px;
       line-height: 17px;
+      // color: #fff;
       font-size: 14px;
       font-weight: 400;
       float: left;

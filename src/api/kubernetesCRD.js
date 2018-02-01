@@ -1,9 +1,5 @@
 const Api = require('kubernetes-client')
 
-// function print (err, result) {
-//   console.log(JSON.stringify(err || result, null, 2))
-// }
-
 const crd = new Api.CustomResourceDefinitions({
   url: 'https://172.22.132.50:6443',
   version: 'v1alpha1',
