@@ -12,7 +12,7 @@
     <div v-if="!isLoading && clusterList !== null" class="clusterCard-wrapper">
       <BackTop :height="100"></BackTop>
       <div>
-        <span style="height: 36px; font-size: 24px; font-weight: bold;">My Environments</span>
+        <span style="height: 36px; font-size: 24px; font-weight: bold;">{{translateKey('content', 'cluster_list_title')}}</span>
         <Button @click="handleCreate" type="primary" icon="plus-round" size="large" style="float: right;">{{translateKey('button', 'create_cluster')}}</Button>
       </div>
       <Row :gutter="16" type="flex" align="middle">
@@ -20,7 +20,7 @@
           <Card class="cluster-card" v-on:click.native="select(item)" :padding="10">
             <p slot="title" style="font-size: 18px; margin: -4px -6px">{{ item.metadata.name }}</p>
             <div class="cluster-card__info">
-              <div class="cluster-card__title">{{translateKey('content', 'clusterCardType')}}</div>
+              <div class="cluster-card__title">{{translateKey('content', 'cluster_card_type')}}</div>
               <Tag :color="item.spec.type === 'Ceph' ? 'red' : 'blue'" style="margin: 0">{{item.spec.type}}</Tag>
             </div>
             <div style="text-align: center; margin-top: 5px; border-top: 1px dotted #8c8c8c; padding-top: 10px;">
@@ -32,21 +32,22 @@
       </Row>
     </div>
 
-    <Modal v-model="dialogFormVisible" :title="translateKey('dialog', 'cluster_information')" :width="650">
-      <Form :rules="rules" ref="dataForm" :model="temp" label-position="left" :label-width="100">
-        <FormItem :label="translateKey('form', 'type')" prop="type">
-          <Select v-model="temp.type" :placeholder="translateKey('form', 'type_placeholder')">
-            <Option v-for="item in deployTypeOptions" :key="translateKey('select', item.key)" :value="item.key">{{translateKey('select', item.key)}}</Option>
-          </Select>
+    <Modal v-model="dialogFormVisible" :title="translateKey('dialog', 'create_cluster_titile')" :width="650">
+      <Form ref="dataForm" :model="temp" label-position="left" :label-width="100">
+        <FormItem :label="translateKey('form', 'create_cluster_name')" prop="name" :rules="getFormRule('name')">
+          <Input v-model="temp.name" :placeholder="translateKey('form', 'create_cluster_name_placeholder')" @on-change="handleFormChangeValidate()"></Input>
         </FormItem>
-        <FormItem :label="translateKey('form', 'name')" prop="name">
-          <Input v-model="temp.name" :placeholder="translateKey('form', 'name_placeholder')"></Input>
+        <FormItem v-for="(item, key) in temp" :key="key" v-if="key !== 'name'" :label="translateKey('form', 'create_cluster_' + key)" :prop="key" :rules="getFormRule(key)">
+          <Select v-if="ikmdefaults[key].type === 'select'" v-model="temp[key]" :transfer="true">
+            <Option v-for="option in ikmdefaults[key].options" :key="option" :value="option">{{option}}</Option>
+          </Select>
+          <Input v-if="ikmdefaults[key].type === 'input'" v-model="temp[key]"></Input>
         </FormItem>
       </Form>
 
       <div slot="footer" class="modal-footer">
         <Button @click="dialogFormVisible=false" icon="close-round">{{translateKey('button', 'cancel')}}</Button>
-        <Button type="primary" icon="checkmark-round" @click="createData">{{translateKey('button', 'create')}}</Button>
+        <Button type="primary" icon="checkmark-round" @click="createData" :disabled="isBtnDisabled">{{translateKey('button', 'create')}}</Button>
       </div>
     </Modal>
   </div>
@@ -56,27 +57,19 @@
 import emptyImage from '@/assets/Empty_images/empty.png'
 import { fetchClustersList, fetchDefaults } from '@/api/kubernetesCRD'
 
-const deployTypeOptions = [
-  { key: 'kubernetes' },
-  { key: 'ceph' }
-]
-
 export default {
   name: 'cluster-list',
   data () {
     return {
       emptyImage,
-      deployTypeOptions,
       clusterList: null,
+      ikmdefaults: null,
       isLoading: true,
+      isBtnDisabled: true,
       temp: {
         name: ''
       },
-      dialogFormVisible: false,
-      rules: {
-        type: [{ required: true, message: 'type is required', trigger: 'change' }],
-        name: [{ required: true, message: 'name is required', trigger: 'blur' }]
-      }
+      dialogFormVisible: false
     }
   },
   created () {
@@ -94,36 +87,56 @@ export default {
         }
       })
     },
+    getFormRule (value) {
+      var rule = {
+        required: true,
+        message: value + ' can not be empty',
+        trigger: 'blur'
+      }
+      return rule
+    },
+    formValidate () {
+      var validateForm = true
+      this.$refs['dataForm'].validate((valid) => {
+        validateForm = valid
+      })
+      return validateForm
+    },
+    handleFormChangeValidate () {
+      this.isBtnDisabled = !this.formValidate()
+    },
     handleCreate () {
       this.dialogFormVisible = true
       this.$nextTick(() => {
+        this.isBtnDisabled = true
         this.$refs['dataForm'].resetFields()
       })
     },
     createData () {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          this.dialogFormVisible = false
-          console.log(this.temp.type)
-          this.$Notice.success({
-            title: this.temp.name + ' 建立成功'
-          })
-        }
-      })
+      if (this.formValidate()) {
+        this.dialogFormVisible = false
+        console.log(this.temp)
+        this.$Notice.success({
+          title: this.temp.name + ' 建立成功'
+        })
+      }
     },
     getClustersList () {
       fetchDefaults('ikm').then(result => {
-        console.log(result.spec)
+        this.ikmdefaults = result.spec
         for (var key in result.spec) {
           this.temp[key] = result.spec[key].default
         }
-        console.log(this.temp)
+      }).catch(() => {
+        console.log('default api failed')
       })
       fetchClustersList().then(result => {
         this.isLoading = false
         if (result.items.length > 0) {
           this.clusterList = result.items
         }
+      }).catch(() => {
+        console.log('cluster api failed')
       })
     }
   }

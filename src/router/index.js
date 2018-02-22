@@ -41,7 +41,7 @@ export const asyncRouterMap = [
     onepage: true,
     meta: {
       title: 'clusterPage',
-      icon: 'cube'
+      icon: 'ionic'
     },
     children: [
       {
@@ -51,7 +51,7 @@ export const asyncRouterMap = [
         meta: {
           nobreadcrumbtitle: true,
           title: 'clusterPage',
-          icon: 'cube'
+          icon: 'social-buffer'
         }
       },
       {
@@ -60,6 +60,8 @@ export const asyncRouterMap = [
         name: 'cluster-info',
         hidden: true,
         meta: {
+          activeMenu: '/cluster/index',
+          topMenu: 'clusterPage',
           title: 'notitle',
           icon: 'cube'
         }
@@ -67,34 +69,70 @@ export const asyncRouterMap = [
     ]
   },
   {
-    path: '/error',
+    path: '/nodes',
     component: Layout,
-    redirect: 'noredirect',
-    name: 'errorPages',
-    meta: {
-      title: 'errorPages',
-      icon: 'android-warning'
-    },
+    redirect: '/nodes/index',
+    name: 'nodePage',
     children: [
       {
-        path: '401',
-        component: _import('errorPage/401'),
-        name: 'page401',
+        path: 'index',
+        component: _import('node/index'),
+        name: 'node',
         meta: {
-          title: 'page401',
-          noCache: true
-        }
-      },
-      {
-        path: '404',
-        component: _import('errorPage/404'),
-        name: 'page404',
-        meta: {
-          title: 'page404',
-          noCache: true
+          title: 'nodePage',
+          icon: 'ios-keypad'
         }
       }
     ]
   },
+  {
+    path: '/catalog',
+    component: Layout,
+    redirect: '/catalog/index',
+    name: 'catalogPage',
+    children: [
+      {
+        path: 'index',
+        component: _import('catalog/index'),
+        name: 'catalog',
+        meta: {
+          title: 'catalogPage',
+          icon: 'android-playstore'
+        }
+      }
+    ]
+  },
+  // {
+  //   path: '/error',
+  //   component: Layout,
+  //   redirect: 'noredirect',
+  //   name: 'errorPages',
+  //   meta: {
+  //     title: 'errorPages',
+  //     icon: 'android-warning'
+  //   },
+  //   children: [
+  //     {
+  //       path: '401',
+  //       component: _import('errorPage/401'),
+  //       name: 'page401',
+  //       meta: {
+  //         topMenu: 'errorPages',
+  //         title: 'page401',
+  //         noCache: true
+  //       }
+  //     },
+  //     {
+  //       path: '404',
+  //       component: _import('errorPage/404'),
+  //       name: 'page404',
+  //       meta: {
+  //         topMenu: 'errorPages',
+  //         title: 'page404',
+  //         noCache: true
+  //       }
+  //     }
+  //   ]
+  // },
   { path: '*', redirect: '/404', hidden: true }
 ]

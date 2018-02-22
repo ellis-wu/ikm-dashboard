@@ -1,7 +1,11 @@
 const Api = require('kubernetes-client')
 
 const crd = new Api.CustomResourceDefinitions({
-  url: 'https://172.22.132.50:6443',
+  url: process.env.SERVER_PROTOCOL + '://' + process.env.SERVER_HOST + ':' + process.env.SERVER_PORT,
+  insecureSkipTlsVerify: true,
+  // auth: {
+  //   bearer: 'your token'
+  // },
   version: 'v1alpha1',
   group: 'ikm.io',
   resources: ['clusters', 'defaults'],
@@ -13,7 +17,7 @@ export function fetchClustersList () {
 }
 
 export function fetchCluster (name) {
-  return crd.ns('default').clusters.get(name)
+  return crd.ns(process.env.IKM_NAMESPACE).clusters.get(name)
 }
 
 export function fetchDefaults (type) {

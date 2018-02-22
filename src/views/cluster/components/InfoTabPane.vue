@@ -5,28 +5,40 @@
       <div class="status-panel__instruction">You must add at least one node to your environment in order to deploy.</div>
       <Button v-if="clusterData.status.state === 'New'" @click="addNodes" icon="plus-round" type="primary">Add Nodes</Button>
     </div>
-    <Row class="info-panel">
+
+    <Row :gutter="20" type="flex">
       <Col span="12">
-        <div class="info-panel__title">Summary</div>
-        <div class="info-title">{{translateKey('content', 'clusterCardName')}}</div>
-        <div class="info-value">{{clusterData.metadata.name}}</div>
-        <div class="info-title">{{translateKey('content', 'clusterCardStatus')}}</div>
-        <div class="info-value">{{clusterData.status.state}}</div>
-        <div class="info-title">{{translateKey('content', 'clusterCardType')}}</div>
-        <div class="info-value">{{clusterData.spec.type}}</div>
-        <div class="info-title">{{translateKey('content', 'clusterCardProvisioner')}}</div>
-        <div class="info-value">{{clusterData.spec.provisionerSpec.name}}</div>
+        <Card class="info-panel">
+          <p slot="title" style="font-size: 18px;">{{translateKey('content', 'info_tabpanl_title_Summary')}}</p>
+          <tag slot="extra" :color="stateColors[clusterData.status.state]"  style="margin: 0">{{clusterData.status.state.toUpperCase()}}</tag>
+          <Row v-for="(item, key) in summaryData" :key="key" :gutter="20">
+            <Col span="12">
+              <div class="info-title">{{translateKey('content', 'info_tabpanl_item_' + key)}}</div>
+            </Col>
+            <Col span="12">
+              <div class="info-value">{{item}}</div>
+            </Col>
+          </Row>
+        </Card>
       </Col>
       <Col span="12">
-        <div class="info-panel__title">Nodes</div>
-        <div v-if="nodeNumber === 0" style="font-size: 14px; font-weight: 400; line-height: 17px;">No nodes found in this environment. Please add nodes in the Nodes tab and try again.</div>
-        <div v-else>You have Nodes WIP</div>
+        <Card class="info-panel">
+          <p slot="title">{{translateKey('content', 'info_tabpanl_title_Nodes')}}</p>
+          <p>[WIP] You did not have any nodes.</p>
+        </Card>
       </Col>
     </Row>
   </div>
 </template>
 
 <script>
+const stateColors = {
+  New: '#4ECDC4',
+  Preparing: '#1A535C',
+  Ready: '#FFE66D',
+  Deploying: '#FF6B6B'
+}
+
 export default {
   props: {
     clusterData: {
@@ -36,8 +48,13 @@ export default {
   },
   data () {
     return {
-      nodeNumber: 1
+      nodeNumber: 1,
+      stateColors,
+      summaryData: {}
     }
+  },
+  created () {
+    this.getSummaryData()
   },
   methods: {
     translateKey (type, key) {
@@ -45,6 +62,11 @@ export default {
     },
     addNodes () {
       this.$emit('addNodes')
+    },
+    getSummaryData () {
+      this.summaryData['name'] = this.clusterData.metadata.name
+      this.summaryData['type'] = this.clusterData.spec.type
+      this.summaryData['provisioner'] = this.clusterData.spec.provisionerSpec.name
     }
   }
 }
@@ -52,10 +74,13 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" scoped>
   .status-panel {
-    border: 1px solid #d3d3d3;
+    // border: 1px solid #d3d3d3;
+    background: #f8f8f8;
+    border-left: 5px solid #8ec320;
     border-radius: 4px;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, .2);
     padding: 10px;
-    margin: 0 0 20px;
+    margin: 10px 0 20px 0;
     &__title {
       font-size: 20px;
       font-weight: 400;
@@ -69,38 +94,29 @@ export default {
     }
   }
   .info-panel {
-    background: #e7f0f2;
-    width: calc(100% + 32px);
-    margin-left: -16px;
-    padding: 10px 16px;
+    background: #f8f8f8;
+    border-top: 5px solid #2abb9b;
+    border-radius: 4px;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, .2);
     &__title {
       font-size: 24px;
       font-weight: bold;
       color: #525960;
-      // color: #fff;
       margin-bottom: 10px;
     }
     .info-title {
-      width: 45%;
-      height: auto;
-      min-height: 30px;
-      line-height: 17px;
-      // color: #fff;
+      // height: auto;
+      // min-height: 30px;
+      // line-height: 17px;
       font-size: 14px;
       font-weight: 600;
-      float: left;
-      margin-bottom: 4px;
     }
     .info-value {
-      width: 55%;
-      height: auto;
-      min-height: 30px;
-      line-height: 17px;
-      // color: #fff;
+      // height: auto;
+      // min-height: 30px;
+      // line-height: 17px;
       font-size: 14px;
       font-weight: 400;
-      float: left;
-      margin-bottom: 4px;
     }
   }
 </style>

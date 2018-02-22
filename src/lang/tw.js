@@ -5,9 +5,10 @@ export default {
     login_btn: '登入'
   },
   route: {
-    // cluster: '叢集',
     clusterPage: '叢集',
+    catalogPage: '應用程式',
     dashboard: '儀表板',
+    nodePage: '節點',
     errorPages: '錯誤頁面',
     info: '資訊',
     page401: '401',
@@ -30,14 +31,13 @@ export default {
     logout_btn: '登出'
   },
   dialog: {
-    cluster_information: '叢集資訊',
-    update_cluster: '更新叢集'
+    create_cluster_titile: '建立一個叢集'
   },
   form: {
-    type: '類型',
-    type_placeholder: '請選擇類型',
-    name: '名稱',
-    name_placeholder: '請輸入名稱',
+    create_cluster_name: '名稱',
+    create_cluster_name_placeholder: '請輸入名稱',
+    create_cluster_cluster: '叢集類型',
+    create_cluster_provisioner: '部署方式',
     setting_group_basic: '基本設定',
     setting_group_network: '網路設定',
     setting_apiServerPort: 'API 服務 Port',
@@ -48,11 +48,6 @@ export default {
     setting_podNetworkCIDR: 'POD 網路 CIDR',
     setting_serviceNetworkCIDR: '服務網路 CIDR',
     setting_versionName: '版本'
-  },
-  select: {
-    baremetal: '裸機',
-    kubernetes: 'Kubernetes',
-    ceph: 'Ceph'
   },
   help: {
     setting_apiServerPort: 'API Server 的 Port',
@@ -67,10 +62,19 @@ export default {
   content: {
     settingKubernetes: 'Kubernetes 設定',
     settingCeph: 'Ceph 設定',
-    clusterCardName: '名稱',
-    clusterCardStatus: '狀態',
-    clusterCardType: '類型',
-    clusterCardProvisioner: '部署方式',
+    cluster_list_title: '我的叢集環境',
+    cluster_card_type: '類型',
+    info_tabpanl_title_Summary: '概要',
+    info_tabpanl_title_Nodes: '節點',
+    info_tabpanl_item_name: '名稱',
+    info_tabpanl_item_type: '類型',
+    info_tabpanl_item_provisioner: '部署方式',
+    addons_tabpanl_kubernetes_dashboard_title: 'Kubernetes Dashboard',
+    addons_tabpanl_kubernetes_dashboard_description: '存取 Kubernetes 原生儀表板。',
+    addons_tabpanl_helm_tiller_title: 'Helm Tiller',
+    addons_tabpanl_helm_tiller_description: 'Kubernetes 應用程式管理伺服器。',
+    addons_tabpanl_web_kubectl_title: 'Web kubectl',
+    addons_tabpanl_web_kubectl_description: '執行 `kubectl` 指令在您的儀表板上。',
     version: '版本',
     apiServerAddress: 'API Server 位址',
     apiServerPort: 'API Server Port',

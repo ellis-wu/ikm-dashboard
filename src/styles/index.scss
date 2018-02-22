@@ -1,3 +1,5 @@
+// @import './prism.css';
+
 body {
   height: 100%;
   background-color: rgb(227, 232, 238);
@@ -14,4 +16,40 @@ html {
 
 #app{
   height: 100%;
+}
+
+code {
+  padding: 2px 4px;
+  border-radius: 1px;
+  background: #fcf2e9;
+  color: #f16a46;
+  font-size: 90%;
+  font-weight: bold;
+}
+
+pre {
+  background: #f8f8f8;
+}
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #657b83; /* base00 */
+  background: none;
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
 }

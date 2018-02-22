@@ -5,9 +5,10 @@ export default {
     login_btn: 'Login'
   },
   route: {
-    // cluster: 'Cluster',
     clusterPage: 'Cluster',
+    catalogPage: 'Apps Catalog',
     dashboard: 'Dashboard',
+    nodePage: 'Nodes',
     errorPages: 'Error Pages',
     info: 'Information',
     page401: '401',
@@ -30,13 +31,13 @@ export default {
     logout_btn: 'Logout'
   },
   dialog: {
-    cluster_information: 'Cluster Information',
-    update_cluster: 'Update Cluster'
+    create_cluster_titile: 'Create a new Cluster'
   },
   form: {
-    type: 'Type',
-    type_placeholder: 'Please select your type',
-    name: 'Name',
+    create_cluster_name: 'Name',
+    create_cluster_name_placeholder: 'Please input you name',
+    create_cluster_cluster: 'Cluster Type',
+    create_cluster_provisioner: 'Provisioner',
     name_placeholder: 'Please enter your name',
     setting_group_basic: 'Basic Setting',
     setting_group_network: 'Networking Setting',
@@ -48,11 +49,6 @@ export default {
     setting_podNetworkCIDR: 'POD Networking CIDR',
     setting_serviceNetworkCIDR: 'Service Network CIDR',
     setting_versionName: 'Version'
-  },
-  select: {
-    baremetal: 'Bare Metal',
-    kubernetes: 'Kubernetes',
-    ceph: 'Ceph'
   },
   help: {
     setting_apiServerPort: 'Kubernetes API Server Port',
@@ -67,10 +63,19 @@ export default {
   content: {
     settingKubernetes: 'Kubernetes Setting',
     settingCeph: 'Ceph Setting',
-    clusterCardName: 'Name',
-    clusterCardStatus: 'Status',
-    clusterCardType: 'Type',
-    clusterCardProvisioner: 'Provisioner',
+    cluster_list_title: 'My Environments',
+    cluster_card_type: 'Type',
+    info_tabpanl_title_Summary: 'Summary',
+    info_tabpanl_title_Nodes: 'Nodes',
+    info_tabpanl_item_name: 'Name',
+    info_tabpanl_item_type: 'Type',
+    info_tabpanl_item_provisioner: 'Provisioner',
+    addons_tabpanl_kubernetes_dashboard_title: 'Kubernetes Dashboard',
+    addons_tabpanl_helm_tiller_description: 'The Kubernetes package manager server.',
+    addons_tabpanl_helm_tiller_title: 'Helm Tiller',
+    addons_tabpanl_kubernetes_dashboard_description: 'Access the native Kubernetes dashboard.',
+    addons_tabpanl_web_kubectl_title: 'Web kubectl',
+    addons_tabpanl_web_kubectl_description: 'Run `kubectl` commands from your browser.',
     version: 'Version',
     apiServerAddress: 'API Server Address',
     apiServerPort: 'API Server Port',

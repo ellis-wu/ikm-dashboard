@@ -1,5 +1,5 @@
 <template>
-  <Menu :active-name="$route.path" :open-names="[$route.meta.topMenu]" theme="dark" width="auto" class="menu-item">
+  <Menu :active-name="$route.meta.activeMenu || $route.path" :open-names="[$route.meta.topMenu]" theme="dark" width="auto" class="menu-item">
     <template v-for="item in routes" v-if="!item.hidden&&item.children">
       <router-link v-if="item.children.length===1 && !item.children[0].children || item.onepage" :to="item.path+'/'+item.children[0].path" :key="item.children[0].name">
         <MenuItem :name="item.path+'/'+item.children[0].path">
@@ -39,14 +39,13 @@ export default {
   //   this.init()
   // },
   methods: {
-    // init () {
-    //   // console.log(this.routes)
-    //   // console.log(this.$route.meta.topMenu)
-    //   for (var item in this.routes) {
-    //     // console.log(this.routes[item]['name'])
-    //     console.log(this.routes[item]['children'])
-    //   }
-    // },
+  //   init () {
+  //     // console.log(this.routes)
+  //     // console.log(this.$route.meta.topMenu)
+  //     for (var item in this.routes) {
+  //       console.log(this.routes[item].children)
+  //     }
+  //   },
     translateKey (key) {
       return this.$t('route.' + key)
     }

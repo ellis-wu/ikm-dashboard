@@ -11,7 +11,7 @@
         <NodesTabPane></NodesTabPane>
       </TabPane>
       <TabPane label="Addons" icon="android-archive" name="addons">
-        Addons Pane
+        <AddonsTabPane :clusterData="clusterData"></AddonsTabPane>
       </TabPane>
       <TabPane label="Logs" icon="clipboard" name="logs">
         Logs Pane
@@ -24,6 +24,7 @@
 import InfoTabPane from './components/InfoTabPane'
 import SettingTabPane from './components/SettingTabPane'
 import NodesTabPane from './components/NodesTabPane'
+import AddonsTabPane from './components/AddonsTabPane'
 import imgDashboard from '@/assets/Addons_images/dashboard_icon.png'
 import { fetchCluster } from '@/api/kubernetesCRD'
 
@@ -32,7 +33,8 @@ export default {
   components: {
     InfoTabPane,
     SettingTabPane,
-    NodesTabPane
+    NodesTabPane,
+    AddonsTabPane
   },
   data () {
     return {

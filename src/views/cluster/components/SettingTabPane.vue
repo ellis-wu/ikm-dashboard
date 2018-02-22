@@ -1,26 +1,30 @@
 <template>
   <div v-if="isAPIResponse">
     <div class="page-title">{{translateKey('content', 'setting' + clusterData.spec.type)}}</div>
-    <Button type="primary" size="large" @click="handleSave" style="float: right;" :disabled="isBtnDisabled">Save</Button>
+    <Button type="primary" size="large" icon="archive" @click="handleSave" style="float: right;" :disabled="isBtnDisabled">Save</Button>
     <template v-for="(defaultItem, defaultKey) in defaultsData" v-if="showSettingGroups[clusterData.spec.type].indexOf(defaultKey) >= 0">
-      <div class="page-group__title">{{translateKey('form', 'setting_group_' + defaultKey )}}</div>
-      <Form class="settingForm" :ref="defaultKey" :model="formData[clusterData.spec.type][defaultKey]" label-position="left">
-        <FormItem v-for="(item, key) in defaultItem" :prop="key" :key="key" :rules="getFormRule(item.default)">
-          <label class="setting-form__item">{{translateKey('form', 'setting_' + key)}}</label>
-          <Select v-if="item.type === 'select'" v-model="formData[clusterData.spec.type][defaultKey][key]" :transfer="true" style="width: 200px;">
-            <Option v-for="option in item.options" :key="option" :value="option">{{option}}</Option>
-          </Select>
-          <Input
-            v-if="item.type === 'input'"
-            v-model="formData[clusterData.spec.type][defaultKey][key]"
-            @on-change="handleFormChangeValidate()"
-            style="width: 200px">
-          </input>
-          <span style="margin-left: 20px; color: #8c8c8c;">{{translateKey('help', 'setting_' + key)}}</span>
-        </FormItem>
-      </Form>
+      <div class="page-group__form">
+        <div class="page-group__title">{{translateKey('form', 'setting_group_' + defaultKey )}}</div>
+        <Form class="settingForm" :ref="defaultKey" :model="formData[clusterData.spec.type][defaultKey]" label-position="left">
+          <FormItem v-for="(item, key) in defaultItem" :prop="key" :key="key" :rules="getFormRule(item.default)">
+            <label class="setting-form__item">{{translateKey('form', 'setting_' + key)}}</label>
+            <Select v-if="item.type === 'select'" v-model="formData[clusterData.spec.type][defaultKey][key]" :transfer="true" style="width: 200px;">
+              <Option v-for="option in item.options" :key="option" :value="option">{{option}}</Option>
+            </Select>
+            <Input
+              v-if="item.type === 'input'"
+              v-model="formData[clusterData.spec.type][defaultKey][key]"
+              @on-change="handleFormChangeValidate()"
+              style="width: 200px;">
+            </input>
+            <span style="margin-left: 20px; color: #8c8c8c;">{{translateKey('help', 'setting_' + key)}}</span>
+          </FormItem>
+        </Form>
+    </div>
     </template>
-    <div class="page-group__title">Extra</div>
+    <div class="page-group__form">
+      <div class="page-group__title">Extra</div>
+    </div>
   </div>
 </template>
 
@@ -49,7 +53,7 @@ export default {
       defaultsData: {},
       showSettingGroups,
       isAPIResponse: false,
-      isBtnDisabled: false,
+      isBtnDisabled: true,
       formData: {
         Kubernetes: {},
         Ceph: {}
@@ -89,7 +93,7 @@ export default {
       var rule = {
         required: true,
         message: 'This field can not be empty',
-        trigger: 'change'
+        trigger: 'blur'
       }
       return rule
     },
@@ -116,7 +120,7 @@ export default {
         var type = this.clusterData.spec.type
         for (var groupKey in this.formData[type]) {
           for (var itemKey in this.formData[type][groupKey]) {
-            console.log(this.formData[type][groupKey][itemKey])
+            console.log(itemKey + ' : ' + this.formData[type][groupKey][itemKey])
           }
         }
       }
@@ -135,9 +139,17 @@ export default {
     font-size: 24px;
     font-weight: bold;
     color: #525960;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
   }
   .page-group {
+    &__form {
+      background: #f8f8f8;
+      margin-bottom: 20px;
+      border-radius: 4px;
+      border-left: 5px solid #19B5FE;
+      padding: 10px;
+      box-shadow: 2px 2px 6px rgba(0, 0, 0, .2);
+    }
     &__title {
       font-size: 21px;
       font-weight: 400;
