@@ -8,7 +8,7 @@
         <Form class="settingForm" :ref="defaultKey" :model="formData[clusterData.spec.type][defaultKey]" label-position="left">
           <FormItem v-for="(item, key) in defaultItem" :prop="key" :key="key" :rules="getFormRule(item.default)">
             <label class="setting-form__item">{{translateKey('form', 'setting_' + key)}}</label>
-            <Select v-if="item.type === 'select'" v-model="formData[clusterData.spec.type][defaultKey][key]" :transfer="true" style="width: 200px;">
+            <Select v-if="item.type === 'select'" v-model="formData[clusterData.spec.type][defaultKey][key]" :transfer="true" @on-change="handleFormChangeValidate()" style="width: 200px;">
               <Option v-for="option in item.options" :key="option" :value="option">{{option}}</Option>
             </Select>
             <Input
@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { fetchDefaults } from '@/api/kubernetesCRD'
+import { fetchDefaults, updateIKMCluster } from '@/api/kubernetesCRD'
 
 const showSettingGroups = {
   Kubernetes: [
@@ -60,15 +60,30 @@ export default {
       }
     }
   },
+  watch: {
+    clusterData: function (value) {
+      this.getDefaults()
+    }
+  },
   methods: {
     translateKey (type, key) {
       return this.$t(type + '.' + key)
     },
     getSettingDefaultsValue (key, dv) {
       if (this.clusterData.spec.type === 'Kubernetes') {
-        return this.clusterData.spec.kubernetesSpec[key].toString() || dv.toString()
+        if (this.clusterData.spec.hasOwnProperty('kubernetesSpec')) {
+          if (this.clusterData.spec.kubernetesSpec.hasOwnProperty(key)) {
+            return this.clusterData.spec.kubernetesSpec[key].toString()
+          }
+        }
+        return dv.toString()
       } else if (this.clusterData.spec.type === 'Ceph') {
-        return this.clusterData.spec.cephSpec[key].toString() || dv.toString()
+        if (this.clusterData.spec.hasOwnProperty('cephSpec')) {
+          if (this.clusterData.spec.kubernetesSpec.hasOwnProperty(key)) {
+            return this.clusterData.spec.kubernetesSpec[key].toString()
+          }
+        }
+        return dv.toString()
       }
     },
     getDefaults () {
@@ -114,15 +129,20 @@ export default {
     },
     handleSave () {
       if (this.formValidate()) {
-        this.$Notice.success({
-          title: '更新成功'
-        })
+        var clusterSpecs = {}
         var type = this.clusterData.spec.type
         for (var groupKey in this.formData[type]) {
           for (var itemKey in this.formData[type][groupKey]) {
-            console.log(itemKey + ' : ' + this.formData[type][groupKey][itemKey])
+            clusterSpecs[itemKey] = this.formData[type][groupKey][itemKey]
           }
         }
+        let name = this.$route.params.show_name.toString()
+        updateIKMCluster(name, clusterSpecs).then(result => {
+          this.isBtnDisabled = true
+          this.$Notice.success({
+            title: '更新成功'
+          })
+        })
       }
     }
   },

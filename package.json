@@ -16,6 +16,7 @@
   "dependencies": {
     "iview": "^2.8.0",
     "js-cookie": "^2.2.0",
+    "json-stream": "^1.0.0",
     "kubernetes-client": "^3.18.0",
     "node-sass": "^4.7.2",
     "normalize.css": "^7.0.0",

@@ -8,9 +8,9 @@
             <Icon type="trash-a" size="18" color="#ed5e69"></Icon>
           </a>
           <div style="text-align: center;">
-            <div><b>{{translateKey('content', 'addons_tabpanl_' + item.name + '_title')}}</b></div>
+            <div><b>{{translateKey('content', 'addons_tabpane_' + item.name + '_title')}}</b></div>
             <img :src="dashbaordImage" style="max-width: 40%; max-height: 40%;"></img>
-            <vue-markdown :source="translateKey('content', 'addons_tabpanl_' + item.name + '_description')"></vue-markdown>
+            <vue-markdown :source="translateKey('content', 'addons_tabpane_' + item.name + '_description')"></vue-markdown>
           </div>
           <Button v-if="item.phase === 'Pending'" type="success" long loading style="margin-top: 16px;">Pending...</Button>
           <Button v-else type="success" long style="margin-top: 16px;" @click="addonAction(item)">{{item.phase}}</Button>
@@ -48,10 +48,11 @@ export default {
     getAddonsDefault () {
       var type = this.clusterData.spec.type
       fetchDefaults(type.toLowerCase()).then(result => {
-        for (var defaultAddonsKey in result.spec.addons) {
+        var addons = result.spec.addons || result.spec.plugins
+        for (var defaultAddonsKey in addons) {
           this.addonsData.push({
-            name: result.spec.addons[defaultAddonsKey].name.replace('-', '_'),
-            phase: this.addonsPhase(result.spec.addons[defaultAddonsKey].name)
+            name: addons[defaultAddonsKey].name.replace('-', '_'),
+            phase: this.addonsPhase(addons[defaultAddonsKey].name)
           })
         }
       })

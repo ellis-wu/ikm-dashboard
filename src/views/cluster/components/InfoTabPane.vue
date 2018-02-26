@@ -9,11 +9,11 @@
     <Row :gutter="20" type="flex">
       <Col span="12">
         <Card class="info-panel">
-          <p slot="title" style="font-size: 18px;">{{translateKey('content', 'info_tabpanl_title_Summary')}}</p>
+          <p slot="title" style="font-size: 18px;">{{translateKey('content', 'info_tabpane_title_Summary')}}</p>
           <tag slot="extra" :color="stateColors[clusterData.status.state]"  style="margin: 0">{{clusterData.status.state.toUpperCase()}}</tag>
           <Row v-for="(item, key) in summaryData" :key="key" :gutter="20">
             <Col span="12">
-              <div class="info-title">{{translateKey('content', 'info_tabpanl_item_' + key)}}</div>
+              <div class="info-title">{{translateKey('content', 'info_tabpane_item_' + key)}}</div>
             </Col>
             <Col span="12">
               <div class="info-value">{{item}}</div>
@@ -23,7 +23,7 @@
       </Col>
       <Col span="12">
         <Card class="info-panel">
-          <p slot="title">{{translateKey('content', 'info_tabpanl_title_Nodes')}}</p>
+          <p slot="title">{{translateKey('content', 'info_tabpane_title_Nodes')}}</p>
           <p>[WIP] You did not have any nodes.</p>
         </Card>
       </Col>
@@ -53,6 +53,11 @@ export default {
       summaryData: {}
     }
   },
+  watch: {
+    clusterData: function (value) {
+      this.getSummaryData()
+    }
+  },
   created () {
     this.getSummaryData()
   },
@@ -66,7 +71,7 @@ export default {
     getSummaryData () {
       this.summaryData['name'] = this.clusterData.metadata.name
       this.summaryData['type'] = this.clusterData.spec.type
-      this.summaryData['provisioner'] = this.clusterData.spec.provisionerSpec.name
+      this.summaryData['provisioner'] = this.clusterData.spec.provisionerSpec.name || this.clusterData.spec.provisionerSpec.type
     }
   }
 }

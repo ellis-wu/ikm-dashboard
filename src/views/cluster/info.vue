@@ -25,8 +25,7 @@ import InfoTabPane from './components/InfoTabPane'
 import SettingTabPane from './components/SettingTabPane'
 import NodesTabPane from './components/NodesTabPane'
 import AddonsTabPane from './components/AddonsTabPane'
-import imgDashboard from '@/assets/Addons_images/dashboard_icon.png'
-import { fetchCluster } from '@/api/kubernetesCRD'
+import { watchIKMCluster } from '@/api/kubernetesCRD'
 
 export default {
   name: 'cluster-info',
@@ -38,7 +37,6 @@ export default {
   },
   data () {
     return {
-      imgDashboard,
       selectTabPane: 'info',
       clusterData: {},
       isAPIResponse: false
@@ -47,11 +45,10 @@ export default {
   methods: {
     getCluster () {
       let index = this.$route.params.show_name.toString()
-      fetchCluster(index).then(result => {
-        this.clusterData = result
+      watchIKMCluster(index).on('data', object => {
+        // console.log(object)
         this.isAPIResponse = true
-      }).catch(() => {
-        this.$router.push({ path: '/cluster' })
+        this.clusterData = object.object
       })
     },
     handleAddNode () {
