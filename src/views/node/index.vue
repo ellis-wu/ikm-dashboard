@@ -1,6 +1,6 @@
 <template>
   <div class="node-container">
-    <h1>Nodes</h1>
+    <h1>[WIP] Nodes</h1>
   </div>
 </template>
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <span class="page-title">[WIP]Assign Roles</span>
+    <span class="page-title">[WIP]Logs</span>
   </div>
 </template>
 

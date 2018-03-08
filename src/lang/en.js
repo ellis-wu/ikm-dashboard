@@ -15,7 +15,9 @@ export default {
     page404: '404'
   },
   notify: {
-    switchLanguageSuccess: 'Switch English Success'
+    switchLanguageSuccess: 'Switch English Success',
+    addon_start_install: 'Start to install ',
+    addon_start_revmoe: 'Start to remove '
   },
   button: {
     cancel: 'Cancel',
@@ -25,13 +27,29 @@ export default {
     nextStep_btn: 'Next',
     prevStep_btn: 'Prev',
     operational: 'Operational',
+    cluster_list_creating_btn: 'Creating...',
     update: 'Update',
     back_btn: 'Back',
     goHome_btn: 'Home',
-    logout_btn: 'Logout'
+    logout_btn: 'Logout',
+    addons_pending_button: 'Pending...',
+    addons_install_button: 'Install',
+    addons_running_button: 'Launch',
+    addons_dialog_install_button: 'Install',
+    addons_remove_button: 'Remove'
   },
   dialog: {
-    create_cluster_titile: 'Create a new Cluster'
+    create_cluster_titile: 'Create a new Cluster',
+    addons_install_title: 'Install Addon',
+    addons_install_description: 'Are you sure you want to install ',
+    addons_remove_title: 'Remove Addon',
+    addons_remove_description: 'Are you sure you want to remove '
+  },
+  tabpane: {
+    information_tabpane: 'Information',
+    node_tabpane: 'Node',
+    addon_tabpane: 'Addon',
+    log_tabpane: 'Log'
   },
   form: {
     create_cluster_name: 'Name',
@@ -41,6 +59,7 @@ export default {
     name_placeholder: 'Please enter your name',
     setting_group_basic: 'Basic Setting',
     setting_group_network: 'Networking Setting',
+    setting_group_extra: 'Extra Setting',
     setting_apiServerPort: 'API Server Port',
     setting_containerRuntime: 'Container Runtime',
     setting_version: 'Version',
@@ -58,11 +77,13 @@ export default {
     setting_networkPlugin: 'Kubernetes CNI Network Plugin',
     setting_podNetworkCIDR: 'Kubernetes Pod Network CIDR',
     setting_serviceNetworkCIDR: 'Kubernetes Service Network CIDR',
-    setting_versionName: 'Ceph Version Name'
+    setting_versionName: 'Ceph Version Name',
+    setting_extraOptions: 'The Extra can set some parameters for your Kubernetes cluster, and it must allow key-value format. For more information, please see [here](https://www.google.com.tw/).'
   },
   content: {
     settingKubernetes: 'Kubernetes Setting',
     settingCeph: 'Ceph Setting',
+    addons_tabpane_page_title: 'Addons',
     cluster_list_title: 'My Environments',
     cluster_card_type: 'Type',
     cluster_card_provisioner: 'Provisioner',

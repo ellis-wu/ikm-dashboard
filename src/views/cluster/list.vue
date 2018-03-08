@@ -2,14 +2,14 @@
   <div class="cluster-container">
     <Spin size="large" v-if="isLoading" style="display: table; margin: 20% auto;"></Spin>
 
-    <div v-if="!isLoading && ikmClusters === null" class="empty-wrapper">
+    <div v-if="!isLoading && ikmClusters.length === 0" class="empty-wrapper">
       <img class="pic-empty" :src="emptyImage" alt="no cluster">
       <h1 class="text-title">{{translateKey('content', 'titleEmpty')}}</h1>
       <h3 class="text-description">{{translateKey('content', 'textEmpty')}}</h3>
       <Button class="create-btn" @click="handleCreate" type="primary" icon="plus-round" shape="circle" size="large">{{translateKey('button', 'create_cluster')}}</Button>
     </div>
 
-    <div v-if="!isLoading && ikmClusters !== null" class="clusterCard-wrapper">
+    <div v-if="!isLoading && ikmClusters.length > 0" class="clusterCard-wrapper">
       <BackTop :height="115"></BackTop>
       <div>
         <span style="height: 36px; font-size: 24px; font-weight: bold;">{{translateKey('content', 'cluster_list_title')}}</span>
@@ -23,11 +23,14 @@
               <div class="cluster-card__title">{{translateKey('content', 'cluster_card_type')}}</div>
               <Tag :color="item.spec.type === 'Ceph' ? 'red' : 'blue'" style="margin: 0">{{item.spec.type}}</Tag>
               <div class="cluster-card__title">{{translateKey('content', 'cluster_card_provisioner')}}</div>
-              <div class="cluster-card__value">{{ item.spec.provisionerSpec.name }}</div>
+              <div class="cluster-card__value">{{ item.spec.provisionerSpec.type }}</div>
             </div>
             <div style="text-align: center; margin-top: 5px; border-top: 1px dotted #8c8c8c; padding-top: 10px;">
-              <span v-if="item.status.state==='New'" class="button-new">{{translateKey('button', 'new')}}</span>
-              <span v-else class="button-update">{{item.status}}{{translateKey('button', 'operational')}}</span>
+              <template v-if="item.status">
+                <span v-if="item.status.state==='New'" class="button-new">{{translateKey('button', 'new')}}</span>
+                <span v-else class="button-update">{{translateKey('button', 'operational')}}</span>
+              </template>
+              <span v-else class="button-new">{{translateKey('button', 'cluster_list_creating_btn')}}</span>
             </div>
           </Card>
         </Col>
@@ -57,8 +60,9 @@
 
 <script>
 import emptyImage from '@/assets/Empty_images/empty.png'
-import { fetchDefaults, watchIKMCluster, createIKMCluster } from '@/api/kubernetesCRD'
+import { fetchDefaults, fetchClustersList, watchIKMCluster, createIKMCluster } from '@/api/kubernetesCRD'
 
+const JSONStream = require('json-stream')
 const createClusterDefaultGroups = {
   Kubernetes: [
     'basic',
@@ -150,14 +154,21 @@ export default {
     getClustersList () {
       fetchDefaults('ikm').then(result => {
         this.ikmDefaults = result.spec
-        for (var key in result.spec) {
-          this.temp[key] = ''
-        }
+        for (var key in result.spec) this.temp[key] = ''
+        fetchClustersList().then(result => {
+          this.isLoading = Boolean(result.items.length)
+          this.watchCluster()
+        })
       }).catch(() => {
         console.log('default api failed')
       })
-      watchIKMCluster().on('data', object => {
-        this.isLoading = false
+    },
+    watchCluster () {
+      var jsonStream = new JSONStream()
+      var stream = watchIKMCluster()
+      stream.pipe(jsonStream)
+      this.ikmClusters = []
+      jsonStream.on('data', object => {
         switch (object.type) {
           case 'ADDED':
             this.ikmClusters.push(object.object)
@@ -181,6 +192,15 @@ export default {
         this.ikmClusters.sort(function (a, b) {
           return a.metadata.creationTimestamp > b.metadata.creationTimestamp ? 1 : -1
         })
+        this.isLoading = false
+      })
+      jsonStream.on('error', err => {
+        console.log(err)
+        this.watchCluster()
+      })
+      jsonStream.on('end', () => {
+        // console.log('end')
+        this.watchCluster()
       })
     }
   }

@@ -7,7 +7,7 @@
         <div class="page-group__title">{{translateKey('form', 'setting_group_' + defaultKey )}}</div>
         <Form class="settingForm" :ref="defaultKey" :model="formData[clusterData.spec.type][defaultKey]" label-position="left">
           <FormItem v-for="(item, key) in defaultItem" :prop="key" :key="key" :rules="getFormRule(item.default)">
-            <label class="setting-form__item">{{translateKey('form', 'setting_' + key)}}</label>
+            <label class="settingForm__item">{{translateKey('form', 'setting_' + key)}}</label>
             <Select v-if="item.type === 'select'" v-model="formData[clusterData.spec.type][defaultKey][key]" :transfer="true" @on-change="handleFormChangeValidate()" style="width: 200px;">
               <Option v-for="option in item.options" :key="option" :value="option">{{option}}</Option>
             </Select>
@@ -23,12 +23,47 @@
     </div>
     </template>
     <div class="page-group__form">
-      <div class="page-group__title">Extra</div>
+      <div class="page-group__title">{{translateKey('form', 'setting_group_extra')}}</div>
+      <!-- <a target="_blank" href="https://www.google.com.tw/">Link</a> -->
+      <vue-markdown class="page-group__description" :source="translateKey('help', 'setting_extraOptions')"></vue-markdown>
+      <Form class="settingForm" ref="extra" :model="extraForm">
+        <Row v-if="extraForm.items.length > 0">
+          <Col span="10">
+            <div class="settingForm__item">Variable</div>
+          </Col>
+          <Col span="10" offset="1">
+            <div class="settingForm__item">Value</div>
+          </Col>
+          <Col span="2" offset="1">
+          </Col>
+        </Row>
+        <FormItem v-for="(item, index) in extraForm.items" :key="index" :prop="'items.' + index + '.value'">
+          <Row>
+            <Col span="10">
+              <Input type="text" v-model="item.variable" placeholder="e.g. FOO" @on-change="handleFormChangeValidate()"></Input>
+            </Col>
+            <Col span="10" offset="1">
+              <Input type="text" v-model="item.value" placeholder="e.g. bar" @on-change="handleFormChangeValidate()"></Input>
+            </Col>
+            <Col span="2" offset="1">
+              <Button type="error" icon="minus-round" size="small" @click="handleRemove(index)"></Button>
+            </Col>
+          </Row>
+        </FormItem>
+        <FormItem>
+          <Row>
+            <Col span="4">
+              <Button type="primary" long @click="handleAdd" icon="plus-round">Add item</Button>
+            </Col>
+          </Row>
+        </FormItem>
+      </Form>
     </div>
   </div>
 </template>
 
 <script>
+import VueMarkdown from 'vue-markdown'
 import { fetchDefaults, updateIKMCluster } from '@/api/kubernetesCRD'
 
 const showSettingGroups = {
@@ -48,16 +83,24 @@ export default {
       require: true
     }
   },
+  components: {
+    VueMarkdown
+  },
   data () {
     return {
       defaultsData: {},
       showSettingGroups,
       isAPIResponse: false,
       isBtnDisabled: true,
+      oldformData: {},
       formData: {
         Kubernetes: {},
         Ceph: {}
-      }
+      },
+      extraForm: {
+        items: []
+      },
+      extraFormOldData: []
     }
   },
   watch: {
@@ -79,8 +122,8 @@ export default {
         return dv.toString()
       } else if (this.clusterData.spec.type === 'Ceph') {
         if (this.clusterData.spec.hasOwnProperty('cephSpec')) {
-          if (this.clusterData.spec.kubernetesSpec.hasOwnProperty(key)) {
-            return this.clusterData.spec.kubernetesSpec[key].toString()
+          if (this.clusterData.spec.cephSpec.hasOwnProperty(key)) {
+            return this.clusterData.spec.cephSpec[key].toString()
           }
         }
         return dv.toString()
@@ -94,8 +137,26 @@ export default {
           if (this.showSettingGroups[type].indexOf(groupKey) >= 0) {
             this.formData[type][groupKey] = {}
             for (var itemKey in result.spec[groupKey]) {
+              this.oldformData[itemKey] = this.getSettingDefaultsValue(itemKey, result.spec[groupKey][itemKey].default)
               this.formData[type][groupKey][itemKey] = this.getSettingDefaultsValue(itemKey, result.spec[groupKey][itemKey].default)
             }
+          }
+        }
+
+        var typeSpec = type.toLowerCase() + 'Spec'
+        var extraOptions = this.clusterData.spec[typeSpec].extraOptions
+        this.extraFormOldData = []
+        this.extraForm.items = []
+        if (this.clusterData.spec[typeSpec] && extraOptions) {
+          for (var key in extraOptions) {
+            this.extraFormOldData.push({
+              variable: extraOptions[key].key,
+              value: JSON.stringify(extraOptions[key].value)
+            })
+            this.extraForm.items.push({
+              variable: extraOptions[key].key,
+              value: JSON.stringify(extraOptions[key].value)
+            })
           }
         }
         this.isAPIResponse = true
@@ -122,7 +183,28 @@ export default {
           }
         })
       }
-      return validateForm
+      let sameValidate = this.formDataSameValidate()
+      return validateForm && !sameValidate
+    },
+    formDataSameValidate () {
+      var type = this.clusterData.spec.type
+      var validate = true
+      for (var formKey in this.formData[type]) {
+        for (var itemKey in this.formData[type][formKey]) {
+          if (this.formData[type][formKey][itemKey] !== this.oldformData[itemKey]) {
+            validate = validate && false
+          }
+        }
+      }
+      // Validate the extra option is same the original data
+      let extraValidate = this.sortExtraData(this.extraForm.items) === this.sortExtraData(this.extraFormOldData)
+      validate = validate && extraValidate
+      return validate
+    },
+    sortExtraData (data) {
+      return JSON.stringify(data.slice().sort(function (a, b) {
+        return a.variable > b.variable ? 1 : -1
+      }))
     },
     handleFormChangeValidate () {
       this.isBtnDisabled = !this.formValidate()
@@ -130,12 +212,24 @@ export default {
     handleSave () {
       if (this.formValidate()) {
         var clusterSpecs = {}
+        var specKey = this.clusterData.spec.type.toLowerCase() + 'Spec'
+        clusterSpecs[specKey] = {}
         var type = this.clusterData.spec.type
         for (var groupKey in this.formData[type]) {
           for (var itemKey in this.formData[type][groupKey]) {
-            clusterSpecs[itemKey] = this.formData[type][groupKey][itemKey]
+            clusterSpecs[specKey][itemKey] = this.formData[type][groupKey][itemKey]
           }
         }
+        var extraOptions = []
+        for (var extraKey in this.extraForm.items) {
+          if (this.extraForm.items[extraKey].variable && this.extraForm.items[extraKey].value) {
+            extraOptions.push({
+              key: this.extraForm.items[extraKey].variable,
+              value: JSON.parse(this.extraForm.items[extraKey].value)
+            })
+          }
+        }
+        clusterSpecs[specKey]['extraOptions'] = extraOptions
         let name = this.$route.params.show_name.toString()
         updateIKMCluster(name, clusterSpecs).then(result => {
           this.isBtnDisabled = true
@@ -144,6 +238,20 @@ export default {
           })
         })
       }
+    },
+    convertType (value) {
+      // if (value === 'true')
+    },
+    handleAdd () {
+      this.extraForm.items.push({
+        variable: '',
+        value: ''
+      })
+      this.handleFormChangeValidate()
+    },
+    handleRemove (index) {
+      this.extraForm.items.splice(index, 1)
+      this.handleFormChangeValidate()
     }
   },
   created () {
@@ -175,12 +283,15 @@ export default {
       font-weight: 400;
       color: #5c636a;
       border-bottom: 1px solid #bebebe;
-      margin: 0 0 30px;
+    }
+    &__description {
+      color: #8c8c8c;
+      font-size: 14px;
+      margin-top: 15px;
     }
   }
-  .setting-form {
-    padding: 0 10px;
-    margin-bottom: 10px;
+  .settingForm {
+    margin-top: 20px;
     &__item {
       display: inline-block;
       width: 200px;

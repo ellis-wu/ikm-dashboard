@@ -15,7 +15,9 @@ export default {
     page404: '404'
   },
   notify: {
-    switchLanguageSuccess: '切換中文成功'
+    switchLanguageSuccess: '切換中文成功',
+    addon_start_install: '開始安裝 ',
+    addon_start_revmoe: '開始移除 '
   },
   button: {
     cancel: '取消',
@@ -25,13 +27,29 @@ export default {
     nextStep_btn: '下一步',
     prevStep_btn: '上一步',
     operational: '可操作',
+    cluster_list_creating_btn: '創建中...',
     update: '更新',
     back_btn: '返回',
     goHome_btn: '返回首頁',
-    logout_btn: '登出'
+    logout_btn: '登出',
+    addons_pending_button: '安裝中...',
+    addons_install_button: '安裝',
+    addons_running_button: '啟動',
+    addons_dialog_install_button: '安裝',
+    addons_remove_button: '解除安裝'
   },
   dialog: {
-    create_cluster_titile: '建立一個叢集'
+    create_cluster_titile: '建立一個叢集',
+    addons_install_title: '安裝插件',
+    addons_install_description: '您確定您要安裝 ',
+    addons_remove_title: '移除插件',
+    addons_remove_description: '您確定您要移除 '
+  },
+  tabpane: {
+    information_tabpane: '資訊',
+    node_tabpane: '節點',
+    addon_tabpane: '插件',
+    log_tabpane: 'Log'
   },
   form: {
     create_cluster_name: '名稱',
@@ -40,6 +58,7 @@ export default {
     create_cluster_provisioner: '部署方式',
     setting_group_basic: '基本設定',
     setting_group_network: '網路設定',
+    setting_group_extra: '額外設定',
     setting_apiServerPort: 'API 服務 Port',
     setting_containerRuntime: '容器 Runtime',
     setting_version: '版本',
@@ -57,12 +76,14 @@ export default {
     setting_networkPlugin: 'Kubernetes CNI 網路 Plugin',
     setting_podNetworkCIDR: 'Kubernetes Pod 的網路 CIDR',
     setting_serviceNetworkCIDR: 'Kubernetes Service 的網路 CIDR',
-    setting_versionName: 'Ceph 版本名稱'
+    setting_versionName: 'Ceph 版本名稱',
+    setting_extraOptions: 'Extra 可以為 Kubernetes 叢集設定一些參數，而它必須遵守 key-value 格式。更多資訊，請參考[這裏](https://www.google.com.tw/)'
   },
   content: {
     settingKubernetes: 'Kubernetes 設定',
     settingCeph: 'Ceph 設定',
     cluster_list_title: '我的叢集環境',
+    addons_tabpane_page_title: '插件',
     cluster_card_type: '類型',
     cluster_card_provisioner: '部署方式',
     info_tabpane_title_Summary: '概要',

@@ -3,14 +3,18 @@
     <div class="status-panel">
       <div class="status-panel__title">Welcome to the New Environment!</div>
       <div class="status-panel__instruction">You must add at least one node to your environment in order to deploy.</div>
-      <Button v-if="clusterData.status.state === 'New'" @click="addNodes" icon="plus-round" type="primary">Add Nodes</Button>
+      <Button v-if="!clusterData.status || clusterData.status.state === 'New'" @click="addNodes" icon="plus-round" type="primary">Add Nodes</Button>
+      <Button v-else icon="upload" type="primary">Deploy</Button>
     </div>
 
     <Row :gutter="20" type="flex">
       <Col span="12">
         <Card class="info-panel">
           <p slot="title" style="font-size: 18px;">{{translateKey('content', 'info_tabpane_title_Summary')}}</p>
-          <tag slot="extra" :color="stateColors[clusterData.status.state]"  style="margin: 0">{{clusterData.status.state.toUpperCase()}}</tag>
+          <template v-if="!clusterData.status || clusterData.status.state === 'New'">
+            <tag slot="extra" :color="stateColors['New']"  style="margin: 0">New</tag>
+          </template>
+          <tag v-else slot="extra" :color="stateColors[clusterData.status.state]"  style="margin: 0">{{clusterData.status.state.toUpperCase()}}</tag>
           <Row v-for="(item, key) in summaryData" :key="key" :gutter="20">
             <Col span="12">
               <div class="info-title">{{translateKey('content', 'info_tabpane_item_' + key)}}</div>
@@ -35,7 +39,7 @@
 const stateColors = {
   New: '#4ECDC4',
   Preparing: '#1A535C',
-  Ready: '#FFE66D',
+  Ready: '#FFCB08',
   Deploying: '#FF6B6B'
 }
 

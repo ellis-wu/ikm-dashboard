@@ -13,15 +13,14 @@ const crd = new Api.CustomResourceDefinitions({
 })
 
 export function watchIKMCluster (name) {
-  const JSONStream = require('json-stream')
-  const jsonStream = new JSONStream()
+  // console.log('watch')
   var queryString = { watch: true }
   if (name) {
     queryString['fieldSelector'] = 'metadata.name=' + name
   }
-  const stream = crd.ns('ikm-system').clusters.getStream({ qs: queryString })
-  stream.pipe(jsonStream)
-  return jsonStream
+  // var stream = crd.ns('ikm-system').clusters.getStream({ qs: queryString })
+  // return stream
+  return crd.ns('ikm-system').clusters.getStream({ qs: queryString })
 }
 
 export function createIKMCluster (basic, clusterSpecs) {
@@ -35,37 +34,29 @@ export function createIKMCluster (basic, clusterSpecs) {
     spec: {
       type: basic.cluster,
       provisionerSpec: {
-        name: basic.provisioner
-      },
-      selector: {
-        matchLabels: {
-          'cluster-name': 'k8s-cluster'
-        }
+        type: basic.provisioner
       }
-    },
-    status: {
-      state: 'New',
-      message: 'New cluster need to setup.'
     }
   }
-  if (basic.cluster === 'Kubernetes') {
-    bodyJson.spec['kubernetesSpec'] = clusterSpecs
-  } else if (basic.cluster === 'Ceph') {
-    bodyJson.spec['cephSpec'] = clusterSpecs
+  switch (basic.cluster) {
+    case 'Kubernetes':
+      bodyJson.spec['kubernetesSpec'] = clusterSpecs
+      break
+    case 'Ceph':
+      bodyJson.spec['cephSpec'] = clusterSpecs
+      break
   }
-  console.log(bodyJson)
   return crd.ns(process.env.IKM_NAMESPACE).clusters.post({ body: bodyJson })
 }
 
 export function updateIKMCluster (clusterName, clusterSpecs) {
-  return crd.ns(process.env.IKM_NAMESPACE).clusters(clusterName).patch({
+  var patchJson = {
     body: {
-      spec: {
-        kubernetesSpec: clusterSpecs
-      }
+      spec: clusterSpecs
     },
     headers: { 'content-type': 'application/merge-patch+json' }
-  })
+  }
+  return crd.ns(process.env.IKM_NAMESPACE).clusters(clusterName).patch(patchJson)
 }
 
 export function fetchClustersList () {
