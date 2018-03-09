@@ -18,14 +18,12 @@
                   <Icon type="arrow-down-b" style="margin-left: 5px;"></Icon>
                 </a>
                 <DropdownMenu slot="list">
-                  <DropdownItem name="logout">{{translateKey('button', 'logout_btn')}}</DropdownItem>
-                  <!-- <DropdownItem name="en" :disabled="language==='en'">English(EN)</DropdownItem> -->
+                  <DropdownItem name="logout">{{ translateKey('button_logout') }}</DropdownItem>
                 </DropdownMenu>
               </Dropdown>
             </div>
           </Header>
           <Content>
-          <!-- <Content :style="{padding: '0 16px 16px'}"> -->
             <app-main></app-main>
           </Content>
         </Layout>
@@ -59,8 +57,8 @@ export default {
     ])
   },
   methods: {
-    translateKey (type, key) {
-      return this.$t(type + '.' + key)
+    translateKey (key) {
+      return this.$t(key)
     },
     logout () {
       this.$store.dispatch('Logout').then(() => {

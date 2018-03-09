@@ -106,9 +106,9 @@ export const asyncRouterMap = [
   //   path: '/error',
   //   component: Layout,
   //   redirect: 'noredirect',
-  //   name: 'errorPages',
+  //   name: 'errorPage',
   //   meta: {
-  //     title: 'errorPages',
+  //     title: 'errorPage',
   //     icon: 'android-warning'
   //   },
   //   children: [
@@ -117,7 +117,7 @@ export const asyncRouterMap = [
   //       component: _import('errorPage/401'),
   //       name: 'page401',
   //       meta: {
-  //         topMenu: 'errorPages',
+  //         topMenu: 'errorPage',
   //         title: 'page401',
   //         noCache: true
   //       }
@@ -127,7 +127,7 @@ export const asyncRouterMap = [
   //       component: _import('errorPage/404'),
   //       name: 'page404',
   //       meta: {
-  //         topMenu: 'errorPages',
+  //         topMenu: 'errorPage',
   //         title: 'page404',
   //         noCache: true
   //       }

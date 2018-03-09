@@ -1,31 +1,34 @@
 <template>
   <div v-if="isAPIResponse">
-    <div class="page-title">{{translateKey('content', 'setting' + clusterData.spec.type)}}</div>
+    <div class="page-title">{{ translateKey('tabpane_page_title_setting_' + clusterData.spec.type.toLowerCase()) }}</div>
     <Button type="primary" size="large" icon="archive" @click="handleSave" style="float: right;" :disabled="isBtnDisabled">Save</Button>
     <template v-for="(defaultItem, defaultKey) in defaultsData" v-if="showSettingGroups[clusterData.spec.type].indexOf(defaultKey) >= 0">
       <div class="page-group__form">
-        <div class="page-group__title">{{translateKey('form', 'setting_group_' + defaultKey )}}</div>
+        <div class="page-group__title">{{ translateKey('form_setting_tabpane_group_' + defaultKey ) }}</div>
         <Form class="settingForm" :ref="defaultKey" :model="formData[clusterData.spec.type][defaultKey]" label-position="left">
           <FormItem v-for="(item, key) in defaultItem" :prop="key" :key="key" :rules="getFormRule(item.default)">
-            <label class="settingForm__item">{{translateKey('form', 'setting_' + key)}}</label>
-            <Select v-if="item.type === 'select'" v-model="formData[clusterData.spec.type][defaultKey][key]" :transfer="true" @on-change="handleFormChangeValidate()" style="width: 200px;">
-              <Option v-for="option in item.options" :key="option" :value="option">{{option}}</Option>
-            </Select>
-            <Input
-              v-if="item.type === 'input'"
-              v-model="formData[clusterData.spec.type][defaultKey][key]"
-              @on-change="handleFormChangeValidate()"
-              style="width: 200px;">
-            </input>
-            <span style="margin-left: 20px; color: #8c8c8c;">{{translateKey('help', 'setting_' + key)}}</span>
+            <Row>
+              <Col span="4">
+                <label class="settingForm__item">{{ translateKey('form_setting_tabpane_item_' + key) }}</label>
+              </Col>
+              <Col span="5" offset="1">
+                <Select v-if="item.type === 'select'" v-model="formData[clusterData.spec.type][defaultKey][key]" :transfer="true" @on-change="handleFormChangeValidate()">
+                  <Option v-for="option in item.options" :key="option" :value="option">{{option}}</Option>
+                </Select>
+                <Input v-if="item.type === 'input'" v-model="formData[clusterData.spec.type][defaultKey][key]" @on-change="handleFormChangeValidate()"></input>
+              </Col>
+              <Col span="13" offset="1">
+                <span style="color: #8c8c8c;">{{ translateKey('help_setting_tabpane_' + key) }}</span>
+              </Col>
+            </Row>
           </FormItem>
         </Form>
     </div>
     </template>
     <div class="page-group__form">
-      <div class="page-group__title">{{translateKey('form', 'setting_group_extra')}}</div>
+      <div class="page-group__title">{{ translateKey('form_setting_tabpane_group_extra') }}</div>
       <!-- <a target="_blank" href="https://www.google.com.tw/">Link</a> -->
-      <vue-markdown class="page-group__description" :source="translateKey('help', 'setting_extraOptions')"></vue-markdown>
+      <vue-markdown class="page-group__description" :source="translateKey('help_setting_tabpane_extra')"></vue-markdown>
       <Form class="settingForm" ref="extra" :model="extraForm">
         <Row v-if="extraForm.items.length > 0">
           <Col span="10">
@@ -53,7 +56,7 @@
         <FormItem>
           <Row>
             <Col span="4">
-              <Button type="primary" long @click="handleAdd" icon="plus-round">Add item</Button>
+              <Button type="primary" long @click="handleAdd" icon="plus-round">{{ translateKey('button_setting_tabpane_additems') }}</Button>
             </Col>
           </Row>
         </FormItem>
@@ -109,8 +112,8 @@ export default {
     }
   },
   methods: {
-    translateKey (type, key) {
-      return this.$t(type + '.' + key)
+    translateKey (key) {
+      return this.$t(key)
     },
     getSettingDefaultsValue (key, dv) {
       if (this.clusterData.spec.type === 'Kubernetes') {
@@ -234,7 +237,7 @@ export default {
         updateIKMCluster(name, clusterSpecs).then(result => {
           this.isBtnDisabled = true
           this.$Notice.success({
-            title: '更新成功'
+            title: this.translateKey('notify_message_setting_update_success')
           })
         })
       }
@@ -293,12 +296,9 @@ export default {
   .settingForm {
     margin-top: 20px;
     &__item {
-      display: inline-block;
-      width: 200px;
-      text-align: left;
+      padding-left: 2px;
       font-size: 14px;
       font-weight: 600;
-      margin-right: 5px;
     }
     &__input {
       background: #f2f5f5;

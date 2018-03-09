@@ -1,8 +1,8 @@
 <template>
   <Breadcrumb class="app-breadcrumb" separator="/">
     <BreadcrumbItem v-for="(item, index) in levelList" :key="item.path" v-if="item.meta.title">
-      <span v-if='item.redirect==="noredirect"||index==levelList.length-1' class="no-redirect">{{translateKey(item.meta.title)}}</span>
-      <router-link v-else :to="item.redirect||item.path">{{translateKey(item.meta.title)}}</router-link>
+      <span v-if='item.redirect==="noredirect"||index==levelList.length-1' class="no-redirect">{{ translateKey('route_title_' + item.meta.title) }}</span>
+      <router-link v-else :to="item.redirect||item.path">{{ translateKey('route_title_' + item.meta.title) }}</router-link>
     </BreadcrumbItem>
   </Breadcrumb>
 </template>
@@ -24,10 +24,10 @@ export default {
   },
   methods: {
     translateKey (key) {
-      if (key === 'notitle') {
+      if (key === 'route_title_notitle') {
         return this.$route.params.show_name.toString()
       } else {
-        return this.$t('route.' + key)
+        return this.$t(key)
       }
     },
     getBreadcrumb () {

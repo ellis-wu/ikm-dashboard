@@ -1,28 +1,23 @@
 <template>
   <div>
-    <span class="page-title">{{translateKey('content', 'addons_tabpane_page_title')}}</span>
+    <span class="page-title">{{ translateKey('tabpane_page_title_addons') }}</span>
     <Row :gutter="12">
       <Col :xs="24" :sm="12":md="12" :lg="8" v-for="item in addonsData" :key="item.name" style="padding-top: 10px;">
         <Card class="addons-card" :padding="14">
           <div v-if="item.phase === 'Running'" slot="extra">
-            <!-- <Tooltip :content="translateKey('button', 'addons_remove_button')" placement="bottom" :transfer="true">
-              <a href="#" @click.prevent="removeAddons(item)">
-                <Icon type="trash-a" size="18" color="#ed5e69"></Icon>
-              </a>
-            </Tooltip> -->
             <a href="#" @click.prevent="removeAddons(item)">
               <Icon type="trash-a" size="18" color="#ed5e69"></Icon>
             </a>
           </div>
           <div style="text-align: center;">
-            <div><b>{{translateKey('content', 'addons_tabpane_' + item.name + '_title')}}</b></div>
+            <div><b>{{ translateKey('card_addons_tabpane_title_' + item.name) }}</b></div>
             <div style="min-height: 120px; margin: 10px 0;">
               <img :src="imageURL(item.name)" style="max-height: 120px;"></img>
             </div>
-            <vue-markdown :source="translateKey('content', 'addons_tabpane_' + item.name + '_description')"></vue-markdown>
+            <vue-markdown :source="translateKey('card_addons_tabpane_description_' + item.name)"></vue-markdown>
           </div>
-          <Button v-if="item.phase === 'Pending'" type="success" long loading style="margin-top: 16px;">{{translateKey('button', 'addons_pending_button')}}</Button>
-          <Button v-else :type="item.buttonType" long style="margin-top: 16px;" @click="addonAction(item)">{{translateKey('button', 'addons_' + item.phase.toLowerCase() + '_button')}}</Button>
+          <Button v-if="item.phase === 'Pending'" type="success" long loading style="margin-top: 16px;">{{ translateKey('button_addons_tabpane_card_pending') }}</Button>
+          <Button v-else :type="item.buttonType" long style="margin-top: 16px;" @click="addonAction(item)">{{ translateKey('button_addons_tabpane_card_' + item.phase.toLowerCase()) }}</Button>
         </Card>
       </Col>
     </Row>
@@ -55,8 +50,8 @@ export default {
     }
   },
   methods: {
-    translateKey (type, key) {
-      return this.$t(type + '.' + key)
+    translateKey (key) {
+      return this.$t(key)
     },
     imageURL (name) {
       return require(`@/assets/Addons_images/${name}.png`)
@@ -78,16 +73,16 @@ export default {
     addonAction (addon) {
       if (addon.phase === 'Install') {
         this.$Modal.confirm({
-          title: this.translateKey('dialog', 'addons_' + addon.phase.toLowerCase() + '_title'),
-          content: this.translateKey('dialog', 'addons_install_description') + this.translateKey('content', 'addons_tabpane_' + addon.name + '_title') + '?',
+          title: this.translateKey('dialog_' + addon.phase.toLowerCase() + '_addon_title'),
+          content: this.translateKey('dialog_install_addon_description') + this.translateKey('card_addons_tabpane_title_' + addon.name) + '?',
           closable: true,
-          cancelText: this.translateKey('button', 'cancel'),
+          cancelText: this.translateKey('button_addons_dialog_cancel'),
           onOk: () => {
             let name = this.$route.params.show_name.toString()
             let addonsSpec = this.handleAddonAction(addon.name)
             updateIKMCluster(name, addonsSpec).then(result => {
               this.$Notice.success({
-                title: this.translateKey('notify', 'addon_start_install') + this.translateKey('content', 'addons_tabpane_' + addon.name + '_title')
+                title: this.translateKey('notify_message_addon_install_start') + this.translateKey('card_addons_tabpane_title_' + addon.name)
               })
             })
           }
@@ -98,16 +93,16 @@ export default {
     },
     removeAddons (addon) {
       this.$Modal.confirm({
-        title: this.translateKey('dialog', 'addons_remove_title'),
-        content: this.translateKey('dialog', 'addons_remove_description') + this.translateKey('content', 'addons_tabpane_' + addon.name + '_title') + '?',
+        title: this.translateKey('dialog_uninstall_addon_title'),
+        content: this.translateKey('dialog_uninstall_addon_description') + this.translateKey('card_addons_tabpane_title_' + addon.name) + '?',
         closable: true,
-        cancelText: this.translateKey('button', 'cancel'),
+        cancelText: this.translateKey('button_addons_dialog_cancel'),
         onOk: () => {
           let name = this.$route.params.show_name.toString()
           let addonsSpec = this.handleAddonAction(addon.name)
           updateIKMCluster(name, addonsSpec).then(result => {
             this.$Notice.success({
-              title: this.translateKey('notify', 'addon_start_revmoe') + this.translateKey('content', 'addons_tabpane_' + addon.name + '_title')
+              title: this.translateKey('notify_message_addon_uninstall_start') + this.translateKey('card_addons_tabpane_title_' + addon.name)
             })
           })
         }

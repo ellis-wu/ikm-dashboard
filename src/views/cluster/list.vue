@@ -4,45 +4,45 @@
 
     <div v-if="!isLoading && ikmClusters.length === 0" class="empty-wrapper">
       <img class="pic-empty" :src="emptyImage" alt="no cluster">
-      <h1 class="text-title">{{translateKey('content', 'titleEmpty')}}</h1>
-      <h3 class="text-description">{{translateKey('content', 'textEmpty')}}</h3>
-      <Button class="create-btn" @click="handleCreate" type="primary" icon="plus-round" shape="circle" size="large">{{translateKey('button', 'create_cluster')}}</Button>
+      <h1 class="text-title">{{ translateKey('description_cluster_list_empty_title') }}</h1>
+      <h3 class="text-description">{{ translateKey('description_cluster_list_empty_subtitle') }}</h3>
+      <Button class="create-btn" @click="handleCreate" type="primary" icon="plus-round" shape="circle" size="large">{{translateKey('button_create_cluster')}}</Button>
     </div>
 
     <div v-if="!isLoading && ikmClusters.length > 0" class="clusterCard-wrapper">
       <BackTop :height="115"></BackTop>
       <div>
-        <span style="height: 36px; font-size: 24px; font-weight: bold;">{{translateKey('content', 'cluster_list_title')}}</span>
-        <Button @click="handleCreate" type="primary" icon="plus-round" size="large" style="float: right;">{{translateKey('button', 'create_cluster')}}</Button>
+        <span style="height: 36px; font-size: 24px; font-weight: bold;">{{ translateKey('page_title_cluster_list') }}</span>
+        <Button @click="handleCreate" type="primary" icon="plus-round" size="large" style="float: right;">{{ translateKey('button_create_cluster') }}</Button>
       </div>
       <Row :gutter="16" type="flex" align="middle">
         <Col :xs="24" :sm="12":md="12" :lg="8" v-for="(item, index) in ikmClusters" :key="index" style="padding-top: 15px;">
           <Card class="cluster-card" v-on:click.native="clickCluster(item)" :padding="10" style="border-top: 4px solid #2abb9b; box-shadow: 2px 2px 6px rgba(0, 0, 0, .2);">
             <p slot="title" style="font-size: 18px; margin: -4px -6px">{{ item.metadata.name }}</p>
             <div class="cluster-card__info">
-              <div class="cluster-card__title">{{translateKey('content', 'cluster_card_type')}}</div>
+              <div class="cluster-card__title">{{ translateKey('card_cluster_list_item_type') }}</div>
               <Tag :color="item.spec.type === 'Ceph' ? 'red' : 'blue'" style="margin: 0">{{item.spec.type}}</Tag>
-              <div class="cluster-card__title">{{translateKey('content', 'cluster_card_provisioner')}}</div>
+              <div class="cluster-card__title">{{ translateKey('card_cluster_list_item_provisioner') }}</div>
               <div class="cluster-card__value">{{ item.spec.provisionerSpec.type }}</div>
             </div>
             <div style="text-align: center; margin-top: 5px; border-top: 1px dotted #8c8c8c; padding-top: 10px;">
               <template v-if="item.status">
-                <span v-if="item.status.state==='New'" class="button-new">{{translateKey('button', 'new')}}</span>
-                <span v-else class="button-update">{{translateKey('button', 'operational')}}</span>
+                <span v-if="item.status.state==='New'" class="button-new">{{ translateKey('button_cluster_list_card_new') }}</span>
+                <span v-else class="button-update">{{ translateKey('button_cluster_list_card_operational') }}</span>
               </template>
-              <span v-else class="button-new">{{translateKey('button', 'cluster_list_creating_btn')}}</span>
+              <span v-else class="button-new">{{ translateKey('button_cluster_list_card_creating') }}</span>
             </div>
           </Card>
         </Col>
       </Row>
     </div>
 
-    <Modal v-model="dialogFormVisible" :title="translateKey('dialog', 'create_cluster_titile')" :width="650" :loading="true">
+    <Modal v-model="dialogFormVisible" :title="translateKey('dialog_create_cluster_title')" :width="650" :loading="true">
       <Form ref="dataForm" :model="temp" label-position="left" :label-width="100">
-        <FormItem :label="translateKey('form', 'create_cluster_name')" prop="name" :rules="getFormRule('name')">
-          <Input v-model="temp.name" :placeholder="translateKey('form', 'create_cluster_name_placeholder')" @on-change="handleFormChangeValidate()"></Input>
+        <FormItem :label="translateKey('form_create_cluster_name')" prop="name" :rules="getFormRule('name')">
+          <Input v-model="temp.name" :placeholder="translateKey('input_placeholder_create_cluster_name')" @on-change="handleFormChangeValidate()"></Input>
         </FormItem>
-        <FormItem v-for="(item, key) in temp" :key="key" v-if="key !== 'name'" :label="translateKey('form', 'create_cluster_' + key)" :prop="key" :rules="getFormRule(key)">
+        <FormItem v-for="(item, key) in temp" :key="key" v-if="key !== 'name'" :label="translateKey('form_create_cluster_' + key)" :prop="key" :rules="getFormRule(key)">
           <Select v-if="ikmDefaults[key].type === 'select'" v-model="temp[key]" :transfer="true" @on-change="handleFormChangeValidate()">
             <Option v-for="option in ikmDefaults[key].options" :key="option" :value="option">{{option}}</Option>
           </Select>
@@ -51,8 +51,8 @@
       </Form>
 
       <div slot="footer" class="modal-footer">
-        <Button @click="dialogFormVisible=false" icon="close-round">{{translateKey('button', 'cancel')}}</Button>
-        <Button type="primary" icon="checkmark-round" @click="createData" :disabled="isBtnDisabled">{{translateKey('button', 'create')}}</Button>
+        <Button @click="dialogFormVisible=false" icon="close-round">{{ translateKey('button_create_cluster_dialog_cancel') }}</Button>
+        <Button type="primary" icon="checkmark-round" @click="createData" :disabled="isBtnDisabled">{{ translateKey('button_create_cluster_dialog_create') }}</Button>
       </div>
     </Modal>
   </div>
@@ -93,8 +93,8 @@ export default {
     this.getClustersList()
   },
   methods: {
-    translateKey (type, key) {
-      return this.$t(type + '.' + key)
+    translateKey (key) {
+      return this.$t(key)
     },
     clickCluster: function (info, event) {
       this.$router.push({
@@ -107,7 +107,7 @@ export default {
     getFormRule (value) {
       var rule = {
         required: true,
-        message: value + ' can not be empty',
+        message: this.translateKey('form_validate_create_cluster_name'),
         trigger: 'blur'
       }
       return rule
@@ -145,7 +145,7 @@ export default {
             console.log('CREATE IKM CLUSTER')
             this.dialogFormVisible = false
             this.$Notice.success({
-              title: this.temp.name + ' 建立成功'
+              title: this.temp.name + this.translateKey('notify_message_create_cluster_success')
             })
           })
         })
@@ -199,7 +199,6 @@ export default {
         this.watchCluster()
       })
       jsonStream.on('end', () => {
-        // console.log('end')
         this.watchCluster()
       })
     }

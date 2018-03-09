@@ -10,24 +10,24 @@
     <Row :gutter="20" type="flex">
       <Col span="12">
         <Card class="info-panel">
-          <p slot="title" style="font-size: 18px;">{{translateKey('content', 'info_tabpane_title_Summary')}}</p>
+          <p slot="title" style="font-size: 18px;">{{ translateKey('card_information_tabpane_title_summary') }}</p>
           <template v-if="!clusterData.status || clusterData.status.state === 'New'">
             <tag slot="extra" :color="stateColors['New']"  style="margin: 0">New</tag>
           </template>
-          <tag v-else slot="extra" :color="stateColors[clusterData.status.state]"  style="margin: 0">{{clusterData.status.state.toUpperCase()}}</tag>
+          <tag v-else slot="extra" :color="stateColors[clusterData.status.state]"  style="margin: 0">{{ clusterData.status.state.toUpperCase() }}</tag>
           <Row v-for="(item, key) in summaryData" :key="key" :gutter="20">
             <Col span="12">
-              <div class="info-title">{{translateKey('content', 'info_tabpane_item_' + key)}}</div>
+              <div class="info-title">{{ translateKey('card_information_tabpane_item_' + key) }}</div>
             </Col>
             <Col span="12">
-              <div class="info-value">{{item}}</div>
+              <div class="info-value">{{ item }}</div>
             </Col>
           </Row>
         </Card>
       </Col>
       <Col span="12">
         <Card class="info-panel">
-          <p slot="title">{{translateKey('content', 'info_tabpane_title_Nodes')}}</p>
+          <p slot="title">{{ translateKey('card_information_tabpane_title_nodes') }}</p>
           <p>[WIP] You did not have any nodes.</p>
         </Card>
       </Col>
@@ -66,8 +66,8 @@ export default {
     this.getSummaryData()
   },
   methods: {
-    translateKey (type, key) {
-      return this.$t(type + '.' + key)
+    translateKey (key) {
+      return this.$t(key)
     },
     addNodes () {
       this.$emit('addNodes')

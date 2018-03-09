@@ -1,20 +1,19 @@
 <template>
   <div class="clusterInfo-container">
     <Tabs type="card" :value="selectTabPane" :animated="false" @on-click="handleTabClicked" v-if="isAPIResponse">
-      <TabPane :label="translateKey('tabpane', 'information_tabpane')" icon="ios-speedometer" name="info">
+      <TabPane :label="translateKey('tabpane_title_information')" icon="ios-speedometer" name="info">
         <InfoTabPane v-on:addNodes="handleAddNode" :clusterData="clusterData"></InfoTabPane>
       </TabPane>
-      <!-- <TabPane label="kubernetes" icon="android-settings" name="kubernetes"> -->
       <TabPane :label="clusterData.spec.type" icon="android-settings" :name="clusterData.spec.type">
         <SettingTabPane :clusterData="clusterData"></SettingTabPane>
       </TabPane>
-      <TabPane :label="translateKey('tabpane', 'node_tabpane')" icon="android-apps" name="nodes">
+      <TabPane :label="translateKey('tabpane_title_nodes')" icon="android-apps" name="nodes">
         <NodesTabPane></NodesTabPane>
       </TabPane>
-      <TabPane :label="translateKey('tabpane', 'addon_tabpane')" icon="android-archive" name="addons">
+      <TabPane :label="translateKey('tabpane_title_addons')" icon="android-archive" name="addons">
         <AddonsTabPane :clusterData="clusterData"></AddonsTabPane>
       </TabPane>
-      <TabPane :label="translateKey('tabpane', 'log_tabpane')" icon="clipboard" name="logs">
+      <TabPane :label="translateKey('tabpane_title_logs')" icon="clipboard" name="logs">
         <LogsTabPane></LogsTabPane>
       </TabPane>
     </Tabs>
@@ -48,8 +47,8 @@ export default {
     }
   },
   methods: {
-    translateKey (type, key) {
-      return this.$t(type + '.' + key)
+    translateKey (key) {
+      return this.$t(key)
     },
     getCluster () {
       var index = this.$route.params.show_name.toString()

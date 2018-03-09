@@ -8,21 +8,21 @@
         <div class="form-container">
           <Form ref="loginForm" :model="form" :rules="rules" autocomplete="on">
             <FormItem prop="username">
-              <Input v-model="form.username" v-bind:placeholder="translateKey('username')" autocomplete="on">
+              <Input v-model="form.username" v-bind:placeholder="translateKey('input_placeholder_login_username')" autocomplete="on">
                 <span slot="prepend">
                   <Icon :size="16" type="person"></Icon>
                 </span>
               </Input>
             </FormItem>
             <FormItem prop="password">
-              <Input type="password" v-model="form.password" v-bind:placeholder="translateKey('password')" autocomplete="on">
+              <Input type="password" v-model="form.password" v-bind:placeholder="translateKey('input_placeholder_login_password')" autocomplete="on">
                 <span slot="prepend">
                   <Icon :size="14" type="locked"></Icon>
                 </span>
               </Input>
             </FormItem>
             <FormItem>
-              <Button @click="handleSubmit" type="primary" :loading="loading" long>{{translateKey('login_btn')}}</Button>
+              <Button @click="handleSubmit" type="primary" :loading="loading" long>{{ translateKey('button_login') }}</Button>
             </FormItem>
           </Form>
         </div>
@@ -54,7 +54,7 @@ export default {
   },
   methods: {
     translateKey (key) {
-      return this.$t('login.' + key)
+      return this.$t(key)
     },
     handleSubmit () {
       this.$refs.loginForm.validate((valid) => {

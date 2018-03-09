@@ -22,13 +22,13 @@ export default {
   },
   methods: {
     translateKey (key) {
-      return this.$t('notify.' + key)
+      return this.$t(key)
     },
     handleClickLangDropdown (lang) {
       if (this.$i18n.locale !== lang) {
         this.$i18n.locale = lang
         this.$store.dispatch('setLanguage', lang)
-        this.$Message.success(this.translateKey('switchLanguageSuccess'))
+        this.$Message.success(this.translateKey('notify_message_switch_language_success'))
       }
     }
   }
