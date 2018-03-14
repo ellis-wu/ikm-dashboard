@@ -242,9 +242,6 @@ export default {
         })
       }
     },
-    convertType (value) {
-      // if (value === 'true')
-    },
     handleAdd () {
       this.extraForm.items.push({
         variable: '',
@@ -279,7 +276,8 @@ export default {
       border-radius: 4px;
       border-left: 5px solid #19B5FE;
       padding: 10px;
-      box-shadow: 2px 2px 6px rgba(0, 0, 0, .2);
+      // box-shadow: 2px 2px 6px rgba(0, 0, 0, .2);
+      box-shadow: 1px 1px 3px #8FA4B1;
     }
     &__title {
       font-size: 21px;

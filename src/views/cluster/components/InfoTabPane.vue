@@ -87,7 +87,8 @@ export default {
     background: #f8f8f8;
     border-left: 5px solid #8ec320;
     border-radius: 4px;
-    box-shadow: 2px 2px 6px rgba(0, 0, 0, .2);
+    // box-shadow: 2px 2px 6px rgba(0, 0, 0, .2);
+    box-shadow: 1px 1px 3px #8FA4B1;
     padding: 10px;
     margin: 10px 0 20px 0;
     &__title {
@@ -106,7 +107,8 @@ export default {
     background: #f8f8f8;
     border-top: 5px solid #2abb9b;
     border-radius: 4px;
-    box-shadow: 2px 2px 6px rgba(0, 0, 0, .2);
+    // box-shadow: 2px 2px 6px rgba(0, 0, 0, .2);
+    box-shadow: 1px 1px 3px #8FA4B1;
     &__title {
       font-size: 24px;
       font-weight: bold;

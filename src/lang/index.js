@@ -19,6 +19,8 @@ const messages = {
   }
 }
 
+// console.log((navigator.language || navigator.browserLangugae).toLowerCase())
+
 const i18n = new Vuei18n({
   // Set locale
   locale: Cookies.get('language') || 'en',

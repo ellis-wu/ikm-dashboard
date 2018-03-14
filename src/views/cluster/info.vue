@@ -8,7 +8,7 @@
         <SettingTabPane :clusterData="clusterData"></SettingTabPane>
       </TabPane>
       <TabPane :label="translateKey('tabpane_title_nodes')" icon="android-apps" name="nodes">
-        <NodesTabPane></NodesTabPane>
+        <NodesTabPane :clusterData="clusterData"></NodesTabPane>
       </TabPane>
       <TabPane :label="translateKey('tabpane_title_addons')" icon="android-archive" name="addons">
         <AddonsTabPane :clusterData="clusterData"></AddonsTabPane>

@@ -8,18 +8,15 @@ const crd = new Api.CustomResourceDefinitions({
   // },
   version: 'v1alpha1',
   group: 'ikm.io',
-  resources: ['clusters', 'defaults'],
+  resources: ['clusters', 'defaults', 'agents'],
   promises: true
 })
 
 export function watchIKMCluster (name) {
-  // console.log('watch')
   var queryString = { watch: true }
   if (name) {
     queryString['fieldSelector'] = 'metadata.name=' + name
   }
-  // var stream = crd.ns('ikm-system').clusters.getStream({ qs: queryString })
-  // return stream
   return crd.ns('ikm-system').clusters.getStream({ qs: queryString })
 }
 
@@ -69,4 +66,15 @@ export function fetchCluster (name) {
 
 export function fetchDefaults (type) {
   return crd.defaults.get(type)
+}
+
+export function fetchAgents (name) {
+  if (name) {
+    return crd.agents.get({
+      qs: {
+        labelSelector: 'cluster-name=' + name
+      }
+    })
+  }
+  return crd.agents.get()
 }

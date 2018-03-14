@@ -149,8 +149,9 @@ export default {
   }
   .addons-card {
     background: #e1eff9;
-    border: 1px solid rgba(73, 80, 96, 0.4);
+    // border: 1px solid rgba(73, 80, 96, 0.4);
     border-radius: 4px;
-    box-shadow: 2px 2px 6px rgba(0, 0, 0, .2);
+    // box-shadow: 2px 2px 6px rgba(0, 0, 0, .2);
+    box-shadow: 1px 1px 3px #8FA4B1;
   }
 </style>
