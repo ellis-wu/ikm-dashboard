@@ -1,7 +1,7 @@
 <template>
   <div v-if="isAPIResponse">
     <div class="page-title">{{ translateKey('tabpane_page_title_setting_' + clusterData.spec.type.toLowerCase()) }}</div>
-    <Button type="primary" size="large" icon="archive" @click="handleSave" style="float: right;" :disabled="isBtnDisabled">Save</Button>
+    <Button type="primary" size="large" icon="archive" @click="handleSave" style="float: right;" :disabled="isBtnDisabled">{{ translateKey('button_setting_tabpane_save') }}</Button>
     <template v-for="(defaultItem, defaultKey) in defaultsData" v-if="showSettingGroups[clusterData.spec.type].indexOf(defaultKey) >= 0">
       <div class="page-group__form">
         <div class="page-group__title">{{ translateKey('form_setting_tabpane_group_' + defaultKey ) }}</div>

@@ -1,20 +1,36 @@
 <template>
   <div>
     <div class="page-title">{{ translateKey('tabpane_page_title_nodes') }}</div>
-    <Button type="primary" size="large" icon="checkmark-round" style="float: right;">Apply</Button>
-    <div class="table-group" v-for="item in agentRoleDefault">
-      <span class="table-title">{{ translateKey('table_agent_tabpane_role_title_' + item.name.toLowerCase().replace('-', '_')) }}</span>
-      <Button type="success" icon="plus-round" style="float: right;"></Button>
-      <vue-markdown class="table-description" :source="translateKey('help_nodes_tabpane_' + item.name.toLowerCase().replace('-', '_'))"></vue-markdown>
-      <ExpandTable :columns="columns" :data="addedNodesDatas[item.name]"></ExpandTable>
+    <div style="float: right;">
+      <Button type="primary" size="large" icon="refresh" @click="getAgents" style="margin-right: 5px;">{{ translateKey('button_nodes_tabpane_refresh') }}</Button>
+      <Button type="primary" size="large" icon="checkmark-round" @click="handleApply">{{ translateKey('button_nodes_tabpane_apply') }}</Button>
     </div>
+
+    <div>
+      <div class="table-group" v-for="item in agentRoleDefault">
+        <span class="table-title">{{ translateKey('table_agent_tabpane_role_title_' + item.name.toLowerCase().replace('-', '_')) }}</span>
+        <Button type="success" icon="plus-round" @click="handleAdded(item.name)" style="float: right;"></Button>
+        <vue-markdown class="table-description" :source="translateKey('help_nodes_tabpane_' + item.name.toLowerCase().replace('-', '_'))"></vue-markdown>
+        <ExpandTable :columns="columns" :data="addedNodesDatas[item.name]" :expand="true"></ExpandTable>
+      </div>
+    </div>
+
+    <Modal v-model="dialogVisible" :title="translateKey('dialog_title_add_' + dialogTitle.replace('-', '_'))" width="1000" @on-cancel="cancelSelectAgents">
+      <div v-if="dialogVisible">
+        <ExpandTable :columns="columns" :data="idleNodesDatas[dialogTitle]" :selection="true" v-on:selectItem="selectAgents"></ExpandTable>
+      </div>
+      <div slot="footer" class="modal-footer">
+        <Button @click="cancelSelectAgents" icon="close-round">{{ translateKey('button_selected_nodes_dialog_cancel') }}</Button>
+        <Button type="primary" icon="checkmark-round" @click="confirmSelectAgents(dialogTitle)">{{ translateKey('button_selected_nodes_dialog_confirm') }}</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 
 <script>
 import VueMarkdown from 'vue-markdown'
 import ExpandTable from '@/components/ExpandTable/expandTable.vue'
-import { fetchDefaults, fetchAgents } from '@/api/kubernetesCRD'
+import { fetchDefaults, fetchAgents, updateIKMAgentRole } from '@/api/kubernetesCRD'
 
 function bytesToSize (bytes) {
   var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
@@ -44,77 +60,16 @@ export default {
       require: true
     }
   },
-  watch: {
-    '$store.state.app.language' () {
-      this.columns = [
-        {
-          title: this.translateKey('table_agent_tabpane_columns_title_name'),
-          key: 'name',
-          width: 300,
-          render: (h, params) => {
-            return h('div', [
-              h('div', {
-                style: {
-                  fontWeight: '600'
-                }
-              }, params.row.name.hostname),
-              h('div', {
-                style: {
-                  fontSize: '12px'
-                }
-              }, params.row.name.uuid)
-            ])
-          }
-        },
-        {
-          title: this.translateKey('table_agent_tabpane_columns_title_cores'),
-          key: 'hostInfo',
-          render: (h, params) => {
-            return h('div', params.row.hostInfo.cpu)
-          }
-        },
-        {
-          title: this.translateKey('table_agent_tabpane_columns_title_ram'),
-          key: 'hostInfo',
-          render: (h, params) => {
-            return h('div', bytesToSize(params.row.hostInfo.memory))
-          }
-        },
-        {
-          title: this.translateKey('table_agent_tabpane_columns_title_disks'),
-          key: 'hostInfo',
-          render: (h, params) => {
-            return h('div', params.row.hostInfo.disks.length)
-          }
-        },
-        {
-          title: this.translateKey('table_agent_tabpane_columns_title_storage'),
-          key: 'hostInfo',
-          render: (h, params) => {
-            return h('div', getDiskSize(params.row.hostInfo.disks))
-          }
-        },
-        {
-          title: this.translateKey('table_agent_tabpane_columns_title_status'),
-          key: 'status',
-          render: (h, params) => {
-            return h('div', {
-              style: {
-                color: '#19be6b'
-              }
-            }, this.translateKey('table_agent_tabpane_status_' + params.row.status.toLowerCase()))
-          }
-        }
-      ]
-    }
-  },
   data () {
     return {
       dialogVisible: false,
+      dialogTitle: 'k8s-master',
       lang: this.$store.state.app.language,
       agentRoleDefault: [],
       addedNodesDatas: {},
       idleNodesDatas: [],
+      changeNodesDatas: [],
+      agentsDatas: {},
       columns: [
         {
           title: this.translateKey('table_agent_tabpane_columns_title_name'),
@@ -180,6 +135,70 @@ export default {
   created () {
     this.getAgents()
   },
+  watch: {
+    '$store.state.app.language' () {
+      this.columns = [
+        {
+          title: this.translateKey('table_agent_tabpane_columns_title_name'),
+          key: 'name',
+          width: 300,
+          render: (h, params) => {
+            return h('div', [
+              h('div', {
+                style: {
+                  fontWeight: '600'
+                }
+              }, params.row.name.hostname),
+              h('div', {
+                style: {
+                  fontSize: '12px'
+                }
+              }, params.row.name.uuid)
+            ])
+          }
+        },
+        {
+          title: this.translateKey('table_agent_tabpane_columns_title_cores'),
+          key: 'hostInfo',
+          render: (h, params) => {
+            return h('div', params.row.hostInfo.cpu)
+          }
+        },
+        {
+          title: this.translateKey('table_agent_tabpane_columns_title_ram'),
+          key: 'hostInfo',
+          render: (h, params) => {
+            return h('div', bytesToSize(params.row.hostInfo.memory))
+          }
+        },
+        {
+          title: this.translateKey('table_agent_tabpane_columns_title_disks'),
+          key: 'hostInfo',
+          render: (h, params) => {
+            return h('div', params.row.hostInfo.disks.length)
+          }
+        },
+        {
+          title: this.translateKey('table_agent_tabpane_columns_title_storage'),
+          key: 'hostInfo',
+          render: (h, params) => {
+            return h('div', getDiskSize(params.row.hostInfo.disks))
+          }
+        },
+        {
+          title: this.translateKey('table_agent_tabpane_columns_title_status'),
+          key: 'status',
+          render: (h, params) => {
+            return h('div', {
+              style: {
+                color: '#19be6b'
+              }
+            }, this.translateKey('table_agent_tabpane_status_' + params.row.status.toLowerCase()))
+          }
+        }
+      ]
+    }
+  },
   methods: {
     translateKey (key) {
       return this.$t(key)
@@ -187,44 +206,136 @@ export default {
     getAgents () {
       var type = this.clusterData.spec.type
       var addedAgentTemp = {}
+      var selectAgentTemp = {}
       fetchDefaults(type.toLowerCase()).then(result => {
         this.agentRoleDefault = result.spec['agent-roles']
         result.spec['agent-roles'].forEach(function (value) {
           addedAgentTemp[value.name] = []
+          selectAgentTemp[value.name] = []
         })
+        var name = this.clusterData.metadata.name
         fetchAgents().then(result => {
-          var name = this.clusterData.metadata.name
-          var idleAgentTemp = []
-          result.items.forEach(function (value) {
-            if (value.metadata.labels) {
-              if (name === value.metadata.labels['cluster-name']) {
-                value.spec.roles.forEach(function (val) {
-                  let temp = []
-                  temp.push({
-                    name: {
-                      uuid: value.metadata.name,
-                      hostname: value.status.hostInfo.hostname
-                    },
-                    hostInfo: value.status.hostInfo,
-                    status: value.status.state
-                  })
-                  addedAgentTemp[val.type] = temp
-                })
+          // Get all of agents data for compare the agents is changed
+          result.items.forEach(agent => {
+            if (agent.spec.roles.length > 0) {
+              if (agent.metadata.labels['cluster-name'] === name) {
+                this.agentsDatas[agent.metadata.name] = agent.spec.roles
               }
             } else {
-              idleAgentTemp.push({
-                name: {
-                  uuid: value.metadata.name,
-                  hostname: value.status.hostInfo.hostname
-                },
-                hostInfo: value.status.hostInfo,
-                status: value.status.state
-              })
+              this.agentsDatas[agent.metadata.name] = agent.spec.roles
             }
           })
+          // Get added nodes data for show of table
+          Object.keys(addedAgentTemp).forEach((rk) => {
+            addedAgentTemp[rk] = result.items.filter(function (agent) {
+              if (agent.spec.roles.length > 0) {
+                let inCluster = agent.metadata.labels['cluster-name'] === name
+                return inCluster && agent.spec.roles.some(function (role) {
+                  return role.type === rk
+                })
+              }
+            }).map((agent) => {
+              return {
+                name: {
+                  uuid: agent.metadata.name,
+                  hostname: agent.status.hostInfo.hostname
+                },
+                hostInfo: agent.status.hostInfo,
+                status: agent.status.state
+              }
+            }).sort(function (a, b) {
+              return a.name.hostname > b.name.hostname ? 1 : -1
+            })
+          })
           this.addedNodesDatas = addedAgentTemp
-          this.idleNodesDatas = idleAgentTemp
+          // Get can be selected agents data
+          Object.keys(addedAgentTemp).forEach((rk) => {
+            selectAgentTemp[rk] = result.items.filter(function (agent) {
+              if (agent.spec.roles.length > 0) {
+                let inCluster = agent.metadata.labels['cluster-name'] === name
+                return inCluster
+              } else {
+                return agent
+              }
+            }).map((agent) => {
+              var isSelected = false
+              if (agent.spec.roles.length > 0) {
+                isSelected = agent.spec.roles.some(function (role) {
+                  return role.type === rk
+                })
+              }
+              return {
+                name: {
+                  uuid: agent.metadata.name,
+                  hostname: agent.status.hostInfo.hostname
+                },
+                hostInfo: agent.status.hostInfo,
+                status: agent.status.state,
+                _checked: isSelected
+              }
+            }).sort(function (a, b) {
+              return a.name.hostname > b.name.hostname ? 1 : -1
+            })
+          })
+          this.idleNodesDatas = selectAgentTemp
         })
+      })
+    },
+    selectAgents (val) {
+      this.changeNodesDatas = val
+    },
+    cancelSelectAgents () {
+      this.dialogVisible = false
+    },
+    confirmSelectAgents (role) {
+      this.addedNodesDatas[role] = this.changeNodesDatas
+      this.idleNodesDatas[role] = this.idleNodesDatas[role].map((agent) => {
+        agent._checked = false
+        let isSelected = this.changeNodesDatas.find((selected) => {
+          return agent.name.uuid === selected.name.uuid
+        })
+        if (isSelected) {
+          agent._checked = true
+        }
+        return agent
+      })
+      this.dialogVisible = false
+    },
+    handleAdded (name) {
+      this.dialogVisible = true
+      this.dialogTitle = name
+    },
+    handleApply () {
+      // Change addedNodesDatas format: { 'agent uuid': [roles] }
+      var addedNodesRoles = {}
+      Object.keys(this.addedNodesDatas).forEach(role => {
+        this.addedNodesDatas[role].forEach(agent => {
+          if (addedNodesRoles[agent.name.uuid] && addedNodesRoles[agent.name.uuid].length > 0) {
+            let roles = addedNodesRoles[agent.name.uuid]
+            roles.push({type: role})
+            addedNodesRoles[agent.name.uuid] = roles
+          } else {
+            addedNodesRoles[agent.name.uuid] = [{type: role}]
+          }
+        })
+      })
+      // Scanner agents and check agent role is change
+      Object.keys(this.agentsDatas).forEach(agentName => {
+        // agent roles is change, so it will update agent role.
+        var isAgentRolesChange = JSON.stringify(this.agentsDatas[agentName]) === JSON.stringify(addedNodesRoles[agentName])
+        if (!isAgentRolesChange) {
+          if (this.agentsDatas[agentName].length > 0 || addedNodesRoles[agentName]) {
+            let agetnRoles = (addedNodesRoles[agentName]) ? addedNodesRoles[agentName] : []
+            updateIKMAgentRole(this.clusterData.metadata.name, agentName, agetnRoles).then(result => {
+              console.log(agentName, 'update success')
+            })
+          }
+        }
+      })
+      // Reload the agents datas
+      this.getAgents()
+      this.$Notice.success({
+        title: this.translateKey('notify_message_nodes_roles_update_success')
       })
     }
   }

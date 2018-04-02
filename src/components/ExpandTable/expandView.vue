@@ -1,46 +1,45 @@
 <template>
   <div>
-    <!-- {{ row }} -->
     <Row class="expand-row" :gutter="16">
       <Col span="9">
         <Icon type="at"></Icon>
-        <span class="expand-item"><b>Host Name</b>: {{ row.name.hostname }}</span>
+        <span class="expand-item"><b>{{ translateKey('expand_table_node_title_hostname') }}</b>: {{ row.name.hostname }}</span>
       </Col>
       <Col span="8">
         <Icon type="cube"></Icon>
-        <span class="expand-item"><b>Architecture</b>: {{ row.hostInfo.architecture }}</span>
+        <span class="expand-item"><b>{{ translateKey('expand_table_node_title_architecture') }}</b>: {{ row.hostInfo.architecture }}</span>
       </Col>
       <Col span="7">
         <Icon type="paper-airplane"></Icon>
-        <span class="expand-item"><b>Cores</b>: {{ row.hostInfo.cpu }}</span>
+        <span class="expand-item"><b>{{ translateKey('expand_table_node_title_cores') }}</b>: {{ row.hostInfo.cpu }}</span>
       </Col>
     </Row>
     <Row class="expand-row" :gutter="16">
       <Col span="9">
         <Icon type="pound"></Icon>
-        <span class="expand-item"><b>UUID</b>: {{ row.name.uuid }}</span>
+        <span class="expand-item"><b>{{ translateKey('expand_table_node_title_uuid') }}</b>: {{ row.name.uuid }}</span>
       </Col>
       <Col span="8">
         <Icon type="social-tux"></Icon>
-        <span class="expand-item"><b>Operating System</b>: {{ row.hostInfo.os }}, {{ row.hostInfo.osImage }}</span>
+        <span class="expand-item"><b>{{ translateKey('expand_table_node_title_os') }}</b>: {{ row.hostInfo.os }}, {{ row.hostInfo.osImage }}</span>
       </Col>
       <Col span="7">
         <Icon type="ios-analytics"></Icon>
-        <span class="expand-item"><b>RAM</b>: {{ bytesToSize(row.hostInfo.memory) }}</span>
+        <span class="expand-item"><b>{{ translateKey('expand_table_node_title_ram') }}</b>: {{ bytesToSize(row.hostInfo.memory) }}</span>
       </Col>
     </Row>
     <Row class="expand-row" :gutter="16">
       <Col span="9">
         <Icon type="ios-pulse-strong"></Icon>
-        <span class="expand-item"><b>Status</b>: {{ row.status }}</span>
+        <span class="expand-item"><b>{{ translateKey('expand_table_node_title_status') }}</b>: {{ row.status }}</span>
       </Col>
       <Col span="8" offset>
         <Icon type="ionic"></Icon>
-        <span class="expand-item"><b>Kernel Version</b>: {{ row.hostInfo.kernelVersion }}</span>
+        <span class="expand-item"><b>{{ translateKey('expand_table_node_title_kernelversion') }}</b>: {{ row.hostInfo.kernelVersion }}</span>
       </Col>
       <Col span="7">
         <Icon type="ios-albums"></Icon>
-        <span class="expand-item"><b>Disks</b>: {{ getDiskSize(row.hostInfo.disks) }}</span>
+        <span class="expand-item"><b>{{ translateKey('expand_table_node_title_disk') }}</b>: {{ getDiskSize(row.hostInfo.disks) }}</span>
       </Col>
     </Row>
   </div>
@@ -52,6 +51,9 @@ export default {
     row: Object
   },
   methods: {
+    translateKey (key) {
+      return this.$t(key)
+    },
     bytesToSize (bytes) {
       var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
       if (bytes === 0) return '0 Byte'

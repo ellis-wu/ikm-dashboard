@@ -1,5 +1,9 @@
 <template>
   <Menu :active-name="$route.meta.activeMenu || $route.path" :open-names="[$route.meta.topMenu]" theme="dark" width="auto" class="menu-item">
+    <!-- <div style="height: 64px;">123</div> -->
+    <div style="height: 64px; position: relative;">
+      <img class="logo-image" :src="imgLogo"  alt="logo" />
+    </div>
     <template v-for="item in routes" v-if="!item.hidden&&item.children">
       <router-link v-if="item.children.length===1 && !item.children[0].children || item.onepage" :to="item.path+'/'+item.children[0].path" :key="item.children[0].name">
         <MenuItem :name="item.path+'/'+item.children[0].path">
@@ -28,6 +32,8 @@
 </template>
 
 <script>
+import imgLogo from '@/assets/side_logo_images/side_logo.png'
+
 export default {
   name: 'SideBar',
   props: {
@@ -35,20 +41,30 @@ export default {
       type: Array
     }
   },
-  // mounted () {
-  //   this.init()
-  // },
+  data () {
+    return {
+      imgLogo
+    }
+  },
   methods: {
-  //   init () {
-  //     // console.log(this.routes)
-  //     // console.log(this.$route.meta.topMenu)
-  //     for (var item in this.routes) {
-  //       console.log(this.routes[item].children)
-  //     }
-  //   },
     translateKey (key) {
       return this.$t(key)
     }
   }
 }
 </script>
+
+<style rel="stylesheet/scss" lang="scss" scoped>
+.logo-image {
+  max-width: 90%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+</style>

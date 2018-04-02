@@ -37,7 +37,7 @@
       </Row>
     </div>
 
-    <Modal v-model="dialogFormVisible" :title="translateKey('dialog_create_cluster_title')" :width="650" :loading="true">
+    <Modal v-model="dialogFormVisible" :title="translateKey('dialog_title_create_cluster')" :width="650" :loading="true">
       <Form ref="dataForm" :model="temp" label-position="left" :label-width="100">
         <FormItem :label="translateKey('form_create_cluster_name')" prop="name" :rules="getFormRule('name')">
           <Input v-model="temp.name" :placeholder="translateKey('input_placeholder_create_cluster_name')" @on-change="handleFormChangeValidate()"></Input>

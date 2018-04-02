@@ -3,7 +3,7 @@
     <div class="login-container">
       <Card :bordered="false">
         <p slot="title">
-          <img :src="imgLogo"  alt="logo" style="max-width: 100%; max-height: 100%" />
+          <img :src="imgLogo" alt="logo" style="max-width: 100%; max-height: 100%" />
         </p>
         <div class="form-container">
           <Form ref="loginForm" :model="form" :rules="rules" autocomplete="on">

@@ -56,6 +56,25 @@ export function updateIKMCluster (clusterName, clusterSpecs) {
   return crd.ns(process.env.IKM_NAMESPACE).clusters(clusterName).patch(patchJson)
 }
 
+export function updateIKMAgentRole (clusterName, agentName, agentRoles) {
+  clusterName = (agentRoles.length) ? clusterName : ''
+  let patchJson = {
+    body: {
+      metadata: {
+        labels: {
+          'cluster-name': clusterName
+        }
+      },
+      spec: {
+        roles: agentRoles
+      }
+    },
+    headers: { 'content-type': 'application/merge-patch+json' }
+  }
+  console.log(patchJson)
+  return crd.ns(process.env.IKM_NAMESPACE).agents(agentName).patch(patchJson)
+}
+
 export function fetchClustersList () {
   return crd.clusters.get()
 }
