@@ -1,6 +1,7 @@
 <template>
   <Table :columns="getColumns()"
     :data="data"
+    :height="getTableHeight()"
     @on-select="selectItem"
     @on-select-cancel="cancelItem"
     @on-select-all="selectItem">
@@ -20,10 +21,22 @@ export default {
     columns: Array,
     data: Array
   },
+  data () {
+    return {
+      pageSize: 5
+    }
+  },
   created () {
     this.getColumns()
   },
   methods: {
+    getTableHeight () {
+      if (this.data.length > this.pageSize) {
+        return 40 + this.pageSize * 48
+      } else {
+        return 40 + this.data.length * 48
+      }
+    },
     getColumns () {
       let expandColumns = []
       if (this.selection) {
