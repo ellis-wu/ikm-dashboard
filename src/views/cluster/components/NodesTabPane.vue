@@ -6,7 +6,7 @@
       <Button type="primary" size="large" icon="checkmark-round" @click="handleApply">{{ translateKey('button_nodes_tabpane_apply') }}</Button>
     </div>
 
-    <div>
+    <div v-if="isAPIResponse">
       <div class="table-group" v-for="item in agentRoleDefault">
         <span class="table-title">{{ translateKey('table_agent_tabpane_role_title_' + item.name.toLowerCase().replace('-', '_')) }}</span>
         <Button type="success" icon="plus-round" @click="handleAdded(item.name)" style="float: right;"></Button>
@@ -15,9 +15,9 @@
       </div>
     </div>
 
-    <Modal v-model="dialogVisible" :title="translateKey('dialog_title_add_' + dialogTitle.replace('-', '_'))" width="1000" @on-cancel="cancelSelectAgents">
-      <div v-if="dialogVisible">
-        <ExpandTable :columns="columns" :data="idleNodesDatas[dialogTitle]" :selection="true" v-on:selectItem="selectAgents"></ExpandTable>
+    <Modal v-model="selectDialogVisible" :title="translateKey('dialog_title_add_' + dialogTitle.replace('-', '_'))" width="1000" @on-cancel="cancelSelectAgents">
+      <div v-if="selectDialogVisible">
+        <ExpandTable :columns="columns" :data="idleNodesDatas[dialogTitle]" :selection="true" :expand="true" v-on:selectItem="selectAgents"></ExpandTable>
       </div>
       <div slot="footer" class="modal-footer">
         <Button @click="cancelSelectAgents" icon="close-round">{{ translateKey('button_selected_nodes_dialog_cancel') }}</Button>
@@ -62,7 +62,8 @@ export default {
   },
   data () {
     return {
-      dialogVisible: false,
+      isAPIResponse: false,
+      selectDialogVisible: false,
       dialogTitle: 'k8s-master',
       lang: this.$store.state.app.language,
       agentRoleDefault: [],
@@ -248,6 +249,7 @@ export default {
             })
           })
           this.addedNodesDatas = addedAgentTemp
+          this.$store.dispatch('setSelectAgents', this.addedNodesDatas)
           // Get can be selected agents data
           Object.keys(addedAgentTemp).forEach((rk) => {
             selectAgentTemp[rk] = result.items.filter(function (agent) {
@@ -278,6 +280,7 @@ export default {
             })
           })
           this.idleNodesDatas = selectAgentTemp
+          this.isAPIResponse = true
         })
       })
     },
@@ -285,7 +288,7 @@ export default {
       this.changeNodesDatas = val
     },
     cancelSelectAgents () {
-      this.dialogVisible = false
+      this.selectDialogVisible = false
     },
     confirmSelectAgents (role) {
       this.addedNodesDatas[role] = this.changeNodesDatas
@@ -299,43 +302,53 @@ export default {
         }
         return agent
       })
-      this.dialogVisible = false
+      this.selectDialogVisible = false
     },
     handleAdded (name) {
-      this.dialogVisible = true
+      this.selectDialogVisible = true
       this.dialogTitle = name
     },
     handleApply () {
-      // Change addedNodesDatas format: { 'agent uuid': [roles] }
-      var addedNodesRoles = {}
-      Object.keys(this.addedNodesDatas).forEach(role => {
-        this.addedNodesDatas[role].forEach(agent => {
-          if (addedNodesRoles[agent.name.uuid] && addedNodesRoles[agent.name.uuid].length > 0) {
-            let roles = addedNodesRoles[agent.name.uuid]
-            roles.push({type: role})
-            addedNodesRoles[agent.name.uuid] = roles
-          } else {
-            addedNodesRoles[agent.name.uuid] = [{type: role}]
-          }
-        })
-      })
-      // Scanner agents and check agent role is change
-      Object.keys(this.agentsDatas).forEach(agentName => {
-        // agent roles is change, so it will update agent role.
-        var isAgentRolesChange = JSON.stringify(this.agentsDatas[agentName]) === JSON.stringify(addedNodesRoles[agentName])
-        if (!isAgentRolesChange) {
-          if (this.agentsDatas[agentName].length > 0 || addedNodesRoles[agentName]) {
-            let agetnRoles = (addedNodesRoles[agentName]) ? addedNodesRoles[agentName] : []
-            updateIKMAgentRole(this.clusterData.metadata.name, agentName, agetnRoles).then(result => {
-              console.log(agentName, 'update success')
+      // show diolog
+      this.$Modal.confirm({
+        title: this.translateKey('dialog_node_role_update_title'),
+        content: this.translateKey('dialog_node_role_update_description'),
+        loading: true,
+        onOk: () => {
+          // Change addedNodesDatas format: { 'agent uuid': [roles] }
+          var addedNodesRoles = {}
+          Object.keys(this.addedNodesDatas).forEach(role => {
+            this.addedNodesDatas[role].forEach(agent => {
+              if (addedNodesRoles[agent.name.uuid] && addedNodesRoles[agent.name.uuid].length > 0) {
+                let roles = addedNodesRoles[agent.name.uuid]
+                roles.push({type: role})
+                addedNodesRoles[agent.name.uuid] = roles
+              } else {
+                addedNodesRoles[agent.name.uuid] = [{type: role}]
+              }
             })
-          }
+          })
+          // Scanner agents and check agent role is change
+          Object.keys(this.agentsDatas).forEach(agentName => {
+            // agent roles is change, so it will update agent role.
+            var isAgentRolesChange = JSON.stringify(this.agentsDatas[agentName]) === JSON.stringify(addedNodesRoles[agentName])
+            if (!isAgentRolesChange) {
+              if (this.agentsDatas[agentName].length > 0 || addedNodesRoles[agentName]) {
+                let agetnRoles = (addedNodesRoles[agentName]) ? addedNodesRoles[agentName] : []
+                updateIKMAgentRole(this.clusterData.metadata.name, agentName, agetnRoles).then(result => {
+                  console.log(agentName, 'update success')
+                })
+              }
+            }
+          })
+          // Reload the agents datas
+          this.getAgents()
+          this.$Modal.remove()
+          this.$Notice.success({
+            title: this.translateKey('notify_message_nodes_roles_update_success')
+          })
+          this.$store.dispatch('setSelectAgents', this.addedNodesDatas)
         }
-      })
-      // Reload the agents datas
-      this.getAgents()
-      this.$Notice.success({
-        title: this.translateKey('notify_message_nodes_roles_update_success')
       })
     }
   }

@@ -64,7 +64,9 @@ export default {
         this.getCluster()
       })
       jsonStream.on('end', () => {
-        this.getCluster()
+        if (this.$route.params.show_name) {
+          this.getCluster()
+        }
       })
     },
     handleAddNode () {

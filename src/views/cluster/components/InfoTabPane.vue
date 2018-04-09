@@ -12,9 +12,9 @@
         <Card class="info-panel">
           <p slot="title" style="font-size: 18px;">{{ translateKey('card_information_tabpane_title_summary') }}</p>
           <template v-if="!clusterData.status || clusterData.status.state === 'New'">
-            <tag slot="extra" :color="stateColors['New']"  style="margin: 0">New</tag>
+            <tag slot="extra" :color="stateColors['New']" style="margin: 0; cursor: default;">New</tag>
           </template>
-          <tag v-else slot="extra" :color="stateColors[clusterData.status.state]"  style="margin: 0">{{ clusterData.status.state.toUpperCase() }}</tag>
+          <tag v-else slot="extra" :color="stateColors[clusterData.status.state]" style="margin: 0; cursor: default;">{{ clusterData.status.state.toUpperCase() }}</tag>
           <Row v-for="(item, key) in summaryData" :key="key" :gutter="20">
             <Col span="12">
               <div class="info-title">{{ translateKey('card_information_tabpane_item_' + key) }}</div>
@@ -27,8 +27,15 @@
       </Col>
       <Col span="12">
         <Card class="info-panel">
-          <p slot="title">{{ translateKey('card_information_tabpane_title_nodes') }}</p>
-          <p>[WIP] You did not have any nodes.</p>
+          <p slot="title" style="font-size: 18px;">{{ translateKey('card_information_tabpane_title_nodes') }}</p>
+          <Row v-for="(item, key) in selectedAgetns" :key="key" :gutter="20">
+            <Col span="12">
+              <div class="info-title">{{ translateKey('card_information_tabpane_item_' + key.replace('-', '_')) }}</div>
+            </Col>
+            <Col span="12">
+              <div>{{ item.length }} / 台</div>
+            </Col>
+          </Row>
         </Card>
       </Col>
     </Row>
@@ -36,6 +43,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 const stateColors = {
   New: '#4ECDC4',
   Preparing: '#1A535C',
@@ -52,10 +61,14 @@ export default {
   },
   data () {
     return {
-      nodeNumber: 1,
       stateColors,
       summaryData: {}
     }
+  },
+  computed: {
+    ...mapGetters([
+      'selectedAgetns'
+    ])
   },
   watch: {
     clusterData: function (value) {

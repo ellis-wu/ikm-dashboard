@@ -21,7 +21,7 @@
             <p slot="title" style="font-size: 18px; margin: -4px -6px">{{ item.metadata.name }}</p>
             <div class="cluster-card__info">
               <div class="cluster-card__title">{{ translateKey('card_cluster_list_item_type') }}</div>
-              <Tag :color="item.spec.type === 'Ceph' ? 'red' : 'blue'" style="margin: 0">{{item.spec.type}}</Tag>
+              <Tag :color="item.spec.type === 'Ceph' ? 'red' : 'blue'" style="margin: 0; cursor: initial;">{{item.spec.type}}</Tag>
               <div class="cluster-card__title">{{ translateKey('card_cluster_list_item_provisioner') }}</div>
               <div class="cluster-card__value">{{ item.spec.provisionerSpec.type }}</div>
             </div>
@@ -169,6 +169,7 @@ export default {
       stream.pipe(jsonStream)
       this.ikmClusters = []
       jsonStream.on('data', object => {
+        this.isLoading = false
         switch (object.type) {
           case 'ADDED':
             this.ikmClusters.push(object.object)
@@ -192,7 +193,6 @@ export default {
         this.ikmClusters.sort(function (a, b) {
           return a.metadata.creationTimestamp > b.metadata.creationTimestamp ? 1 : -1
         })
-        this.isLoading = false
       })
       jsonStream.on('error', err => {
         console.log(err)
@@ -217,6 +217,7 @@ export default {
       padding: 7% 0 0 0;
     }
     .cluster-card {
+      cursor: pointer;
       .ivu-card-head {
         padding: 10px;
       }

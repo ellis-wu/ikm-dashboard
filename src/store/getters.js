@@ -1,4 +1,5 @@
 const getters = {
+  selectedAgetns: state => state.agents.selected,
   language: state => state.app.language,
   token: state => state.user.token,
   avatar: state => state.user.avatar,

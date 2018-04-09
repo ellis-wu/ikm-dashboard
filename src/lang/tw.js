@@ -30,10 +30,17 @@ export default {
   card_information_tabpane_item_provisioner: '部署方式',
   card_information_tabpane_title_nodes: '節點',
   card_information_tabpane_title_summary: '概要',
+
+  card_information_tabpane_item_k8s_master: 'Kubernetes Master',
+  card_information_tabpane_item_k8s_node: 'Kubernetes Node',
+  card_information_tabpane_item_k8s_etcd: 'Kubernetes Etcd',
+
   description_cluster_list_empty_subtitle: '您必須先建立一個叢集，請點擊以下按鈕新建一個叢集',
   description_cluster_list_empty_title: '你還沒有任何叢集',
   dialog_install_addon_description: '確定是否要安裝 ',
   dialog_install_addon_title: '安裝插件',
+  dialog_node_role_update_description: '<p style="margin-bottom: 30px;">確定是否更新節點角色？</p><p>更新節點角色時請勿使用【重新整理】</p>',
+  dialog_node_role_update_title: '更新節點角色',
   dialog_title_add_k8s_etcd: '新增 Kubernetes Etcd',
   dialog_title_add_k8s_master: '新增 Kubernetes Master',
   dialog_title_add_k8s_node: '新增 Kubernetes Node',

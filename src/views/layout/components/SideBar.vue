@@ -56,7 +56,7 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 .logo-image {
-  max-width: 90%;
+  max-width: 100%;
   max-height: 100%;
   width: auto;
   height: auto;

@@ -25,8 +25,8 @@
 </template>
 
 <script>
-import { fetchDefaults, updateIKMCluster } from '@/api/kubernetesCRD'
 import VueMarkdown from 'vue-markdown'
+import { fetchDefaults, updateIKMCluster } from '@/api/kubernetesCRD'
 
 export default {
   props: {
@@ -118,9 +118,7 @@ export default {
       } else {
         addons.push(name.replace('_', '-'))
       }
-      addonSpec[specKey] = {
-        addons: addons
-      }
+      addonSpec[specKey] = { addons: addons }
       return addonSpec
     },
     addonsPhase (addonName) {

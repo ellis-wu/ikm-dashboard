@@ -71,7 +71,6 @@ export function updateIKMAgentRole (clusterName, agentName, agentRoles) {
     },
     headers: { 'content-type': 'application/merge-patch+json' }
   }
-  console.log(patchJson)
   return crd.ns(process.env.IKM_NAMESPACE).agents(agentName).patch(patchJson)
 }
 
