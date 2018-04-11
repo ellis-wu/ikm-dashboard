@@ -17,7 +17,7 @@
 
     <Modal v-model="selectDialogVisible" :title="translateKey('dialog_title_add_' + dialogTitle.replace('-', '_'))" width="1000" @on-cancel="cancelSelectAgents">
       <div v-if="selectDialogVisible">
-        <ExpandTable :columns="columns" :data="idleNodesDatas[dialogTitle]" :selection="true" :expand="true" v-on:selectItem="selectAgents"></ExpandTable>
+        <ExpandTable ref="childComponent" :columns="columns" :data="idleNodesDatas[dialogTitle]" :selection="true" :expand="true" v-on:selectItems="selectAgents"></ExpandTable>
       </div>
       <div slot="footer" class="modal-footer">
         <Button @click="cancelSelectAgents" icon="close-round">{{ translateKey('button_selected_nodes_dialog_cancel') }}</Button>
@@ -288,6 +288,7 @@ export default {
       this.changeNodesDatas = val
     },
     cancelSelectAgents () {
+      this.$refs.childComponent.cancelAction()
       this.selectDialogVisible = false
     },
     confirmSelectAgents (role) {

@@ -1,12 +1,31 @@
 <template>
   <div class="dashboard-container">
     <h1>[WIP] Dashboard</h1>
+    <Table :columns="columns1"></Table>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'dashboard'
+  name: 'dashboard',
+  data () {
+    return {
+      columns1: [
+        {
+          title: 'Name',
+          key: 'name'
+        },
+        {
+          title: 'Age',
+          key: 'age'
+        },
+        {
+          title: 'Address',
+          key: 'address'
+        }
+      ]
+    }
+  }
 }
 </script>
 
