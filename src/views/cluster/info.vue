@@ -1,5 +1,7 @@
 <template>
   <div class="clusterInfo-container">
+    <BackTop :height="64"></BackTop>
+
     <Tabs type="card" :value="selectTabPane" :animated="false" @on-click="handleTabClicked" v-if="isAPIResponse">
       <TabPane :label="translateKey('tabpane_title_information')" icon="ios-speedometer" name="info">
         <InfoTabPane v-on:addNodes="handleAddNode" :clusterData="clusterData"></InfoTabPane>

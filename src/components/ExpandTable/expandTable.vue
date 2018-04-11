@@ -64,7 +64,7 @@ export default {
       if (!this.data.length) {
         return ''
       }
-      return 40 + this.pageSize * 48 + 5
+      return 40 + this.pageSize * 48 + 1
     },
     getColumns () {
       let expandColumns = []
