@@ -29,10 +29,10 @@
         <Card class="info-panel">
           <p slot="title" style="font-size: 18px;">{{ translateKey('card_information_tabpane_title_nodes') }}</p>
           <Row v-for="(item, key) in selectedAgetns" :key="key" :gutter="20">
-            <Col span="12">
+            <Col span="14">
               <div class="info-title">{{ translateKey('card_information_tabpane_item_' + key.replace('-', '_')) }}</div>
             </Col>
-            <Col span="12">
+            <Col span="10">
               <div>{{ item.length }} / 台</div>
             </Col>
           </Row>

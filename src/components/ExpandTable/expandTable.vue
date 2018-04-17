@@ -31,6 +31,10 @@ export default {
   props: {
     selection: false,
     expand: false,
+    pageSize: {
+      type: Number,
+      default: 5
+    },
     columns: {
       type: Array,
       require: true
@@ -50,7 +54,6 @@ export default {
   },
   data () {
     return {
-      pageSize: 5,
       currentPage: 1,
       pageTableDatas: [],
       historyDatas: []
@@ -61,10 +64,10 @@ export default {
   },
   methods: {
     getTableHeight () {
-      if (!this.data.length) {
+      if (!this.data.length || (this.currentPage === 1 && this.data.length < this.pageSize)) {
         return ''
       }
-      return 40 + this.pageSize * 48 + 1
+      return 40 + parseInt(this.pageSize) * 48 + 1
     },
     getColumns () {
       let expandColumns = []

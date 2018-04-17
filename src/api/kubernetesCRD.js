@@ -87,12 +87,12 @@ export function fetchDefaults (type) {
 }
 
 export function fetchAgents (name) {
-  if (name) {
-    return crd.agents.get({
-      qs: {
-        labelSelector: 'cluster-name=' + name
-      }
-    })
-  }
-  return crd.agents.get()
+  // if (name) {
+  //   return crd.agents.get({
+  //     qs: {
+  //       labelSelector: 'name=' + name
+  //     }
+  //   })
+  // }
+  return crd.ns(process.env.IKM_NAMESPACE).agents.get(name)
 }
