@@ -69,17 +69,35 @@ export const asyncRouterMap = [
     ]
   },
   {
-    path: '/nodes',
+    path: '/node',
     component: Layout,
-    redirect: '/nodes/index',
+    redirect: '/node/index',
     name: 'nodePage',
+    onepage: true,
+    meta: {
+      title: 'nodePage',
+      icon: 'ios-keypad'
+    },
     children: [
       {
         path: 'index',
-        component: _import('node/index'),
-        name: 'node',
+        component: _import('node/list'),
+        name: 'node-list',
         meta: {
+          nobreadcrumbtitle: true,
           title: 'nodePage',
+          icon: 'ios-keypad'
+        }
+      },
+      {
+        path: 'info/:show_name',
+        component: _import('node/info'),
+        name: 'node-info',
+        hidden: true,
+        meta: {
+          activeMenu: '/node/index',
+          topMenu: 'nodePage',
+          title: 'notitle',
           icon: 'ios-keypad'
         }
       }

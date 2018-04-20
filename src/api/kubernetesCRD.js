@@ -17,7 +17,15 @@ export function watchIKMCluster (name) {
   if (name) {
     queryString['fieldSelector'] = 'metadata.name=' + name
   }
-  return crd.ns('ikm-system').clusters.getStream({ qs: queryString })
+  return crd.ns(process.env.IKM_NAMESPACE).clusters.getStream({ qs: queryString })
+}
+
+export function watchIKMAgent (name) {
+  var queryString = { watch: true }
+  if (name) {
+    queryString['fieldSelector'] = 'metadata.name=' + name
+  }
+  return crd.ns(process.env.IKM_NAMESPACE).agents.getStream({ qs: queryString })
 }
 
 export function createIKMCluster (basic, clusterSpecs) {
@@ -87,12 +95,5 @@ export function fetchDefaults (type) {
 }
 
 export function fetchAgents (name) {
-  // if (name) {
-  //   return crd.agents.get({
-  //     qs: {
-  //       labelSelector: 'name=' + name
-  //     }
-  //   })
-  // }
   return crd.ns(process.env.IKM_NAMESPACE).agents.get(name)
 }
