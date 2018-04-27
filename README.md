@@ -45,7 +45,7 @@ The environment you can set:
 ### How to Build Docker Image
 First, clone this repository:
 ```sh
-$ git clone -b dev https://github.com/ellis-wu/ikm-dashboard-docker.git
+$ git clone -b dev https://github.com/ellis-wu/ikm-dashboard.git
 $ cd ikm-dashboard/
 ```
 
