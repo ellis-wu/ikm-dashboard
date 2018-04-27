@@ -3,10 +3,10 @@
     <Card>
       <Row class="errorPage-row">
         <Col :span="12">
-          <Button type="primary" size="large" @click="back" icon='chevron-left'>返回</Button>
+          <Button type="primary" size="large" @click="back" icon='chevron-left'>{{ translateKey('button_401_back') }}</Button>
           <h1 class="text-jumbo text-ginormous">Oops!</h1>
-          <h2>{{translateKey('content', 'title401')}}</h2>
-          <h4 class="text-content">{{translateKey('content', 'text401')}}</h4>
+          <h2>{{translateKey('page_401_content_title')}}</h2>
+          <h4 class="text-content">{{translateKey('page_401_content_subtitle')}}</h4>
         </Col>
         <Col :span="12">
           <img :src="errGif"alt="Girl has dropped her ice cream.">
@@ -27,8 +27,8 @@ export default {
     }
   },
   methods: {
-    translateKey (type, key) {
-      return this.$t(type + '.' + key)
+    translateKey (key) {
+      return this.$t(key)
     },
     back () {
       if (this.$route.query.noGoBack) {

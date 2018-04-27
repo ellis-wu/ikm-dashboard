@@ -1,8 +1,8 @@
 <template>
   <div class="nodeInfo-container">
-     <div v-if="isAPIResponse">
-       <!-- node basic information -->
-      <Row :gutter="16" type="flex" style="margin-bottom: 15px;">
+    <div v-if="isAPIResponse">
+      <!-- node basic information -->
+      <Row type="flex" style="margin-bottom: 15px;">
         <Col span="24">
           <Card class="node-info-card">
             <div slot="title">
@@ -10,82 +10,30 @@
               <div class="node-info-card__subtitle">{{ agentData.metadata.name }}</div>
             </div>
             <!-- node basic detail information -->
-            <Row :gutter="16">
-              <!-- if node not selected role then show alert -->
-              <Row v-if="agentData.metadata.labels['cluster-name'].length === 0">
-                <!-- <Alert type="warning" show-icon> -->
-                <Alert show-icon>
-                  {{ translateKey('card_agent_list_item_not_select') }}
-                  <span slot="desc">{{ translateKey('alert_node_info_not_selected') }}</span>
-                </Alert>
-              </Row>
-              <Row>
-                <Col span="12">
-                  <!-- show cluster -->
-                  <Row :gutter="18" v-if="agentData.metadata.labels['cluster-name'].length !== 0">
-                    <Col span="8">
-                      <Icon type="earth" :size="14"></Icon>
-                      <span class="node-info-card__title">{{ translateKey('card_node_informtaion_item_cluster') }}</span>
-                    </Col>
-                    <Col span="16">
-                      <span class="node-info-card__value">{{ agentData.metadata.labels['cluster-name'] }}</span>
-                    </Col>
-                  </Row>
-                  <!-- show role -->
-                  <Row :gutter="18" v-if="agentData.metadata.labels['cluster-name'].length !== 0">
-                    <Col span="8">
-                      <Icon type="pricetag" :size="14"></Icon>
-                      <span class="node-info-card__title">{{ translateKey('card_node_informtaion_item_roles') }}</span>
-                    </Col>
-                    <Col span="16">
-                      <template v-for="(role, index) in agentData.spec.roles">
-                        <!-- <span v-if="index !== 0">, </span> -->
-                        <Tag color="blue">{{ role.type.split("-")[1].toUpperCase() }}</Tag>
-                      </template>
-                    </Col>
-                  </Row>
-                  <!-- show node architecture -->
-                  <Row :gutter="18">
-                    <Col span="8">
-                      <Icon type="cube" :size="14"></Icon>
-                      <span class="node-info-card__title">{{ translateKey('card_node_informtaion_item_architecture') }}</span>
-                    </Col>
-                    <Col span="16">
-                      <span class="node-info-card__value">{{ agentData.status.hostInfo.architecture }}</span>
-                    </Col>
-                  </Row>
-                  <!-- show node os -->
-                  <Row :gutter="18">
-                    <Col span="8">
-                      <Icon type="social-tux" :size="14"></Icon>
-                      <span class="node-info-card__title">{{ translateKey('card_node_informtaion_item_os') }}</span>
-                    </Col>
-                    <Col span="16">
-                      <span class="node-info-card__value">{{ agentData.status.hostInfo.os }}, {{ agentData.status.hostInfo.osImage }}</span>
-                    </Col>
-                  </Row>
-                  <!-- show node kernel version -->
-                  <Row :gutter="18">
-                    <Col span="8">
-                      <Icon type="disc" :size="14"></Icon>
-                      <span class="node-info-card__title">{{ translateKey('card_node_informtaion_item_kernelversion') }}</span>
-                    </Col>
-                    <Col span="16">
-                      <span class="node-info-card__value">{{ agentData.status.hostInfo.kernelVersion }}</span>
-                    </Col>
-                  </Row>
-                  <!-- show node created time -->
-                  <Row :gutter="18">
-                    <Col span="8">
-                      <Icon type="calendar" :size="14"></Icon>
-                      <span class="node-info-card__title">{{ translateKey('card_node_informtaion_item_createtime') }}</span>
-                    </Col>
-                    <Col span="16">
-                      <span class="node-info-card__value">{{ getLocalDateString(agentData.metadata.creationTimestamp) }}</span>
-                    </Col>
-                  </Row>
-                </Col>
-              </Row>
+            <Row v-if="getBasicInformation().cluster.value.length === 0">
+              <Alert show-icon>
+                {{ translateKey('card_agent_list_item_not_select') }}
+                <span slot="desc">{{ translateKey('alert_node_info_not_selected') }}</span>
+              </Alert>
+            </Row>
+            <Row>
+              <Col span="12">
+                <Row v-for="(item, key) in getBasicInformation()" :key="key" :gutter="18">
+                  <Col span="8" v-if="item.value.length > 0">
+                    <Icon :type="item.icon"></Icon>
+                    <span class="node-info-card__title">{{ translateKey('card_node_informtaion_item_' + key) }}</span>
+                  </Col>
+                  <Col span="16" v-if="item.value.length > 0">
+                    <template v-if="typeof (item.value) === 'object'">
+                      <Tag v-for="role in item.value" :key="role" color="blue">{{ role.split("-")[1].toUpperCase() }}</Tag>
+                    </template>
+                    <template v-else>
+                      <span class="node-info-card__value" v-if="key === 'createtime'">{{ getLocalDateString(item.value) }}</span>
+                      <span class="node-info-card__value" v-else>{{ item.value }}</span>
+                    </template>
+                  </Col>
+                </Row>
+              </Col>
             </Row>
           </Card>
         </Col>
@@ -93,51 +41,36 @@
 
       <!-- node card information -->
       <Row :gutter="16" type="flex" style="margin-bottom: 15px;">
-        <!-- node cpu infomation card -->
-        <Col span="6">
-          <inforCard id-name="cpu_core"
-            :end-val="agentData.status.hostInfo.cpu"
-            unit="cores"
-            iconType="ionic"
-            color="#079992"
-            intro-text="CPU">
-          </inforCard>
-        </Col>
-        <!-- node ram infomation card -->
-        <Col span="6">
-          <inforCard id-name="ram_size"
-            :end-val="bytesToSize(agentData.status.hostInfo.memory).value"
-            :unit="bytesToSize(agentData.status.hostInfo.memory).unit"
-            iconType="waterdrop"
-            color="#2bcbba"
-            intro-text="RAM">
-          </inforCard>
-        </Col>
-        <!-- node disk infomation card -->
-        <Col span="6">
-          <inforCard id-name="disk_size"
-            :end-val="getDiskSize(agentData.status.hostInfo.disks).value"
-            :unit="getDiskSize(agentData.status.hostInfo.disks).unit"
-            iconType="filing"
-            color="#2980b9"
-            intro-text="DISK">
-          </inforCard>
-        </Col>
-        <!-- node network infomation card -->
-        <Col span="6">
-          <inforCard id-name="netwrok_count"
-            :end-val="agentData.status.hostInfo.ifaces.length"
-            iconType="ios-analytics"
-            color="#45aaf2"
-            intro-text="INTERFACES">
+        <Col span="6" v-for="(item, key) in getCardInformation()" :key="key">
+          <inforCard :id-name="item.id"
+            :end-val="item.value"
+            :unit="item.unit"
+            :iconType="item.icon"
+            :color="item.color"
+            :intro-text="translateKey('card_node_information_item_' + key)">
           </inforCard>
         </Col>
       </Row>
 
-      <!-- disk detail infomation -->
+      <!-- disk and Netwrok detail infomation -->
       <Row :gutter="16" type="flex">
+        <!-- disk -->
         <Col span="24">
           <Card class="node-info-card">
+            <div slot="title">
+              <p style="font-size: 18px;">{{ translateKey('card_node_information_title_disk') }}</p>
+            </div>
+            <capacityBar :data="getCapacityDisksBarData()"></capacityBar>
+            <ExpandTable :columns="diskTableColumns" :data="getDisksTableData(agentData.status.hostInfo.disks)" :showStripe="true"></ExpandTable>
+          </Card>
+        </Col>
+        <!-- network -->
+        <Col span="24" style="margin-top: 15px;">
+          <Card class="node-info-card">
+            <div slot="title">
+              <p style="font-size: 18px;">{{ translateKey('card_node_information_title_network') }}</p>
+            </div>
+            <ExpandTable :columns="networkTableColumns" :data="getNetworkTableData()" :showStripe="true"></ExpandTable>
           </Card>
         </Col>
       </Row>
@@ -148,6 +81,8 @@
 <script>
 import Cookies from 'js-cookie'
 import inforCard from './components/inforCard'
+import capacityBar from './components/capacityBar'
+import ExpandTable from '@/components/ExpandTable/expandTable.vue'
 import { watchIKMAgent } from '@/api/kubernetesCRD'
 
 const JSONStream = require('json-stream')
@@ -155,13 +90,82 @@ const JSONStream = require('json-stream')
 export default {
   name: 'node-info',
   components: {
-    inforCard
+    inforCard,
+    capacityBar,
+    ExpandTable
   },
   data () {
     return {
       isAPIResponse: false,
       agentData: {},
-      test: {}
+      diskTableColumns: [
+        {
+          title: this.translateKey('table_node_information_disk_title_name'),
+          key: 'name'
+        },
+        {
+          title: this.translateKey('table_node_information_disk_title_type'),
+          key: 'type'
+        },
+        {
+          title: this.translateKey('table_node_information_disk_title_mounted'),
+          key: 'mounted'
+        },
+        {
+          title: this.translateKey('table_node_information_disk_title_size'),
+          key: 'size'
+        }
+      ],
+      networkTableColumns: [
+        {
+          title: this.translateKey('table_node_information_network_title_name'),
+          key: 'name'
+        },
+        {
+          title: this.translateKey('table_node_information_network_title_ipv4'),
+          key: 'ipv4'
+        },
+        {
+          title: this.translateKey('table_node_information_network_title_ipv6'),
+          key: 'ipv6'
+        }
+      ]
+    }
+  },
+  watch: {
+    '$store.state.app.language' () {
+      this.diskTableColumns = [
+        {
+          title: this.translateKey('table_node_information_disk_title_name'),
+          key: 'name'
+        },
+        {
+          title: this.translateKey('table_node_information_disk_title_type'),
+          key: 'type'
+        },
+        {
+          title: this.translateKey('table_node_information_disk_title_mounted'),
+          key: 'mounted'
+        },
+        {
+          title: this.translateKey('table_node_information_disk_title_size'),
+          key: 'size'
+        }
+      ]
+      this.networkTableColumns = [
+        {
+          title: this.translateKey('table_node_information_network_title_name'),
+          key: 'name'
+        },
+        {
+          title: this.translateKey('table_node_information_network_title_ipv4'),
+          key: 'ipv4'
+        },
+        {
+          title: this.translateKey('table_node_information_network_title_ipv6'),
+          key: 'ipv6'
+        }
+      ]
     }
   },
   created () {
@@ -195,6 +199,96 @@ export default {
     getLocalDateString (date) {
       return new Date(date).toLocaleString(Cookies.get('language') || 'en')
     },
+    getBasicInformation () {
+      return {
+        cluster: {
+          icon: 'earth',
+          value: this.agentData.metadata.labels['cluster-name']
+        },
+        roles: {
+          icon: 'pricetag',
+          value: this.agentData.spec.roles.map(val => {
+            return val.type
+          })
+        },
+        architecture: {
+          icon: 'cube',
+          value: this.agentData.status.hostInfo.architecture
+        },
+        os: {
+          icon: 'social-tux',
+          value: this.agentData.status.hostInfo.os + ', ' + this.agentData.status.hostInfo.osImage
+        },
+        kernelversion: {
+          icon: 'disc',
+          value: this.agentData.status.hostInfo.kernelVersion
+        },
+        createtime: {
+          icon: 'calendar',
+          value: this.agentData.metadata.creationTimestamp
+        }
+      }
+    },
+    getCardInformation () {
+      return {
+        cpu: {
+          id: 'cpu_core',
+          icon: 'ionic',
+          color: '#079992',
+          value: this.agentData.status.hostInfo.cpu,
+          unit: 'cores'
+        },
+        ram: {
+          id: 'ram_size',
+          icon: 'waterdrop',
+          color: '#2bcbba',
+          value: this.bytesToSize(this.agentData.status.hostInfo.memory).value,
+          unit: this.bytesToSize(this.agentData.status.hostInfo.memory).unit
+        },
+        disk: {
+          id: 'disk_size',
+          icon: 'filing',
+          color: '#2980b9',
+          value: this.getDiskSize(this.agentData.status.hostInfo.disks).value,
+          unit: this.getDiskSize(this.agentData.status.hostInfo.disks).unit
+        },
+        interfaces: {
+          id: 'interface_count',
+          icon: 'ios-analytics',
+          color: '#45aaf2',
+          value: this.agentData.status.hostInfo.ifaces.length,
+          unit: ''
+        }
+      }
+    },
+    getDisksTableData (disks) {
+      return disks.map(disk => {
+        var diskSize = this.bytesToSize(disk.size)
+        return {
+          name: disk.name,
+          type: disk.type || '-',
+          mounted: disk.mountPoint || '-',
+          size: diskSize.value + ' ' + diskSize.unit
+        }
+      })
+    },
+    getCapacityDisksBarData () {
+      return this.agentData.status.hostInfo.disks.map(disk => {
+        return {
+          name: disk.name,
+          value: disk.size
+        }
+      })
+    },
+    getNetworkTableData () {
+      return this.agentData.status.hostInfo.ifaces.map(iface => {
+        var result = { name: iface.name }
+        iface.networks.forEach(val => {
+          result[val.type.toLowerCase()] = val.address
+        })
+        return result
+      })
+    },
     getAgent () {
       var index = this.$route.params.show_name.toString()
       var jsonStream = new JSONStream()
@@ -203,6 +297,7 @@ export default {
       jsonStream.on('data', object => {
         this.isAPIResponse = true
         this.agentData = object.object
+        this.getCardInformation()
       })
       jsonStream.on('error', err => {
         console.log(err)
@@ -224,9 +319,7 @@ export default {
     height: 100%;
     padding: 16px;
     .node-info-card {
-      background: #f8f8f8;
-      border-left: 5px solid #f39c12;
-      box-shadow: 2px 2px 6px rgba(0, 0, 0, .2);
+      border-left: 5px solid #4a69bd;
       &__title {
         font-size: 14px;
         font-weight: 600;

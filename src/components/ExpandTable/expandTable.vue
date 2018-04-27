@@ -3,6 +3,7 @@
     <Table :columns="getColumns()"
       :data="pageTableDatas"
       :height="getTableHeight()"
+      :stripe="showStripe"
       @on-select="selectItems"
       @on-select-cancel="cancelItems"
       @on-select-all="selectItems"
@@ -42,6 +43,10 @@ export default {
     data: {
       type: Array,
       require: true
+    },
+    showStripe: {
+      type: Boolean,
+      default: false
     }
   },
   watch: {

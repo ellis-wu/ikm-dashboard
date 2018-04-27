@@ -1,5 +1,9 @@
 export default {
   alert_node_info_not_selected: 'You can go to【Cluster】page, and select one of clusters then assign a role for this node.',
+
+  button_401_back: 'Back',
+  button_404_go_home: 'Home',
+
   button_addons_dialog_cancel: 'Cancel',
   button_addons_tabpane_card_install: 'Install',
   button_addons_tabpane_card_pending: 'Pending...',
@@ -12,6 +16,9 @@ export default {
   button_create_cluster_dialog_create: 'Create',
   button_login: 'Login',
   button_logout: 'Logout',
+
+  button_node_list_card_read_more: 'READ MORE',
+
   button_nodes_tabpane_apply: 'Apply',
   button_nodes_tabpane_refresh: 'Refresh',
   button_selected_nodes_dialog_cancel: 'Cancel',
@@ -47,12 +54,22 @@ export default {
   card_information_tabpane_item_provisioner: 'Provisioner',
   card_information_tabpane_title_nodes: 'Nodes',
   card_information_tabpane_title_summary: 'Summary',
+
   card_node_informtaion_item_architecture: 'Architecture',
   card_node_informtaion_item_cluster: 'Cluster',
+  card_node_information_item_cpu: 'CPU',
   card_node_informtaion_item_createtime: 'Create Time',
+  card_node_information_item_disk: 'DISK',
+  card_node_information_item_interfaces: 'INTERFACES',
   card_node_informtaion_item_kernelversion: 'Kernel Version',
   card_node_informtaion_item_os: 'Operating System',
+  card_node_information_item_ram: 'RAM',
   card_node_informtaion_item_roles: 'Roles',
+
+  card_node_information_item_disk_capacity: 'Total Capacity',
+  card_node_information_title_disk: 'Disk Information',
+  card_node_information_title_network: 'Network Information',
+
   description_cluster_list_empty_subtitle: 'First, you must to create a Cluster. Please click button to create a Cluster',
   description_cluster_list_empty_title: 'Look like you have no Cluster',
   dialog_install_addon_description: 'Are you sure you want to install ',
@@ -120,6 +137,12 @@ export default {
   notify_message_nodes_roles_update_success: 'Roles of Nodes Update Success',
   notify_message_setting_update_success: 'Update Suceess',
   notify_message_switch_language_success: 'Switch English Success',
+
+  page_401_content_subtitle: 'If you have any questions, please contact the administrator',
+  page_401_content_title: 'You do not have permission',
+  page_404_content_subtitle: 'Please check your URL is correct, and click Back to return to the Dashboard',
+  page_404_content_title: 'PAGE NOT FOUND......',
+
   page_title_cluster_list: 'My Environments',
   page_title_nodes_list: 'My Nodes',
   route_title_catalogPage: 'Apps Catalog',
@@ -142,6 +165,15 @@ export default {
   table_agent_tabpane_role_title_k8s_node: 'Kubernetes Node',
   table_agent_tabpane_status_pending: 'Pending',
   table_agent_tabpane_status_running: 'Running',
+
+  table_node_information_disk_title_mounted: 'Mounted',
+  table_node_information_disk_title_name: 'Name',
+  table_node_information_disk_title_size: 'Size',
+  table_node_information_disk_title_type: 'Type',
+  table_node_information_network_title_ipv4: 'IPv4',
+  table_node_information_network_title_ipv6: 'IPv6',
+  table_node_information_network_title_name: 'Name',
+
   tabpane_page_title_addons: 'Addons',
   tabpane_page_title_nodes: 'Assign Roles',
   tabpane_page_title_setting_kubernetes: 'Kubernetes Setting',

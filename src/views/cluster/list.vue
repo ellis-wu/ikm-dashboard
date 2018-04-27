@@ -10,7 +10,7 @@
     </div>
 
     <div v-if="!isLoading && ikmClusters.length > 0" class="clusterCard-wrapper">
-      <BackTop :height="115" :bottom="50"></BackTop>
+      <BackTop :height="115"></BackTop>
       <div>
         <span style="height: 36px; font-size: 24px; font-weight: bold;">{{ translateKey('page_title_cluster_list') }}</span>
         <Button @click="handleCreate" type="primary" icon="plus-round" size="large" style="float: right;">{{ translateKey('button_create_cluster') }}</Button>

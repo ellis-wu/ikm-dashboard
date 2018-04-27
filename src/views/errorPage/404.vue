@@ -8,9 +8,9 @@
     </div>
     <div class="text-404">
       <div class="text-404__oops">Oops!</div>
-      <div class="text-404__headline">{{translateKey('content', 'title404')}}</div>
-      <div class="text-404__info">{{translateKey('content', 'text404')}}</div>
-      <a href="/" class="text-404__return-home">{{translateKey('button', 'goHome_btn')}}</a>
+      <div class="text-404__headline">{{ translateKey('page_404_content_title') }}</div>
+      <div class="text-404__info">{{ translateKey('page_404_content_subtitle') }}</div>
+      <a href="/" class="text-404__return-home">{{ translateKey('button_404_home') }}</a>
     </div>
   </div>
 </template>
@@ -28,8 +28,8 @@ export default {
     }
   },
   methods: {
-    translateKey (type, key) {
-      return this.$t(type + '.' + key)
+    translateKey (key) {
+      return this.$t(key)
     }
   }
 }
@@ -159,7 +159,7 @@ export default {
     .text-404 {
       position: relative;
       float: left;
-      width: 300px;
+      width: 350px;
       padding: 150px 0;
       overflow: hidden;
       &__oops {

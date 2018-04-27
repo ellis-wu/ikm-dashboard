@@ -3,15 +3,20 @@
     <Spin size="large" v-if="isLoading" style="display: table; margin: 20% auto;"></Spin>
 
     <div v-if="!isLoading">
-      <BackTop :height="115" :bottom="50"></BackTop>
+      <BackTop :height="115"></BackTop>
       <span style="height: 36px; font-size: 24px; font-weight: bold;">{{ translateKey('page_title_nodes_list') }}</span>
       <Row :gutter="16" type="flex" align="middle">
         <Col :xs="24" :sm="12":md="12" :lg="8" v-for="(item, index) in ikmAgents" :key="index" style="padding-top: 15px;">
           <div class="node-card" v-bind:class="{ 'node-card__run': item.status.state==='Running'}">
             <div>
               <span class="node-card__title">{{ item.status.hostInfo.hostname }}</span>
+              <div style="font-size: 14px; color: gray;">{{ item.metadata.name }}</div>
             </div>
-            <div style="font-size: 14px; color: gray;">{{ item.metadata.name }}</div>
+
+            <div style="margin-top: 15px;">
+              <Icon class="node-card__icon" type="calendar" :size="14" color="#4a69bd"></Icon>
+              <span class="node-card__span">{{ getLocalDateString(item.metadata.creationTimestamp) }}</span>
+            </div>
 
             <div v-if="item.metadata.labels['cluster-name'].length === 0" class="node-card__location">
               <Icon class="node-card__icon" type="android-alert" :size="14" color="#fa983a"></Icon>
@@ -48,9 +53,16 @@
               </Row>
             </div>
 
-            <div style="margin-top: 20px; padding-left: 1px;">
-              <i>{{ getLocalDateString(item.metadata.creationTimestamp) }}</i>
-              <a style="float: right; font-weight: 600;" v-on:click="clickAgent(item)">more...</a>
+            <!-- <div style="margin-top: 20px; padding-left: 1px;"> -->
+            <div style="margin-top: 20px; padding-left: 1px; border-top: 1px dotted #8c8c8c;">
+              <Button class="readmore-btn"
+                type="text"
+                icon="search"
+                @click="clickAgent(item)"
+                long>
+                {{ translateKey('button_node_list_card_read_more') }}
+              </Button>
+              <!-- <i>{{ getLocalDateString(item.metadata.creationTimestamp) }}</i> -->
             </div>
           </div>
         </Col>
@@ -91,9 +103,6 @@ export default {
     }
   },
   created () {
-    // fetchAgents('99c7670f-e5b6-4023-b9c2-d445b3b15017').then(result => {
-    //   console.log(result)
-    // })
     this.watchAgent()
   },
   methods: {
@@ -177,7 +186,7 @@ export default {
       background: #fff;
       padding: 10px;
       border-radius: 5px;
-      // border-left: 5px solid #ed5e69;
+      border-left: 5px solid #ed5e69;
       box-shadow: 2px 2px 6px rgba(0, 0, 0, .2);
       &__run {
         border-left: 5px solid #3cb371;
@@ -208,6 +217,15 @@ export default {
     .col-middle {
       border-left: 1px solid #e5e5e5;
       border-right: 1px solid #e5e5e5;
+    }
+    .readmore-btn {
+      margin-top: 8px;
+      font-weight: 600;
+      color: #273c75;
+      &:hover {
+        color: #487eb0;
+        background: rgba(29, 33, 41, .04);
+      }
     }
   }
 </style>
