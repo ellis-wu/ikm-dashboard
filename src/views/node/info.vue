@@ -38,7 +38,6 @@
           </Card>
         </Col>
       </Row>
-
       <!-- node card information -->
       <Row :gutter="16" type="flex" style="margin-bottom: 15px;">
         <Col span="6" v-for="(item, key) in getCardInformation()" :key="key">
@@ -201,6 +200,10 @@ export default {
     },
     getBasicInformation () {
       return {
+        status: {
+          icon: 'heart',
+          value: this.agentData.status.state.toUpperCase()
+        },
         cluster: {
           icon: 'earth',
           value: this.agentData.metadata.labels['cluster-name']

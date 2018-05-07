@@ -142,12 +142,11 @@ export default {
         })
       }
       this.$emit('selectItems', this.historyDatas.filter(data => { return data._checked }))
-      console.log(this.historyDatas.filter(data => {
+      this.historyDatas.filter(data => {
         return data._checked
-      }))
+      })
     },
     cancelAction () {
-      console.log('cancel select agents dialog in child component')
       this.historyDatas = this.data
     }
   }

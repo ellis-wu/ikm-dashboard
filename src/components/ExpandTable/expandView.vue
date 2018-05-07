@@ -61,18 +61,11 @@ export default {
       return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i]
     },
     getDiskSize (disks) {
-      // var result = 0
       for (var key in disks) {
         if (disks[key].type === 'disk') {
           return this.bytesToSize(disks[key].size)
         }
       }
-      // disks.forEach(function (value) {
-      //   if (value.type === 'disk') {
-      //     result = this.bytesToSize(value.size)
-      //   }
-      // })
-      // return result
     }
   }
 }

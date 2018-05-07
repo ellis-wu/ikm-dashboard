@@ -1,9 +1,7 @@
 export default {
   alert_node_info_not_selected: '你可以前往【叢集】頁面，選擇一叢集然後選擇此節點在叢集中的角色。',
-
   button_401_back: '返回',
   button_404_home: '返回首頁',
-
   button_addons_dialog_cancel: '取消',
   button_addons_tabpane_card_install: '安裝',
   button_addons_tabpane_card_pending: '安裝中...',
@@ -16,9 +14,7 @@ export default {
   button_create_cluster_dialog_create: '建立',
   button_login: '登入',
   button_logout: '登出',
-
   button_node_list_card_read_more: '更多',
-
   button_nodes_tabpane_apply: '更新節點',
   button_nodes_tabpane_refresh: '重新載入',
   button_selected_nodes_dialog_cancel: '取消',
@@ -54,22 +50,20 @@ export default {
   card_information_tabpane_item_type: '叢集類型',
   card_information_tabpane_title_nodes: '節點',
   card_information_tabpane_title_summary: '概要',
-
   card_node_informtaion_item_architecture: '架構',
   card_node_informtaion_item_cluster: '叢集',
   card_node_information_item_cpu: 'CPU',
   card_node_informtaion_item_createtime: '創建時間',
   card_node_information_item_disk: '硬碟',
+  card_node_information_item_disk_capacity: '總容量',
   card_node_information_item_interfaces: '網卡',
   card_node_informtaion_item_kernelversion: 'Kernel 版本',
   card_node_informtaion_item_os: '作業系統',
   card_node_information_item_ram: '記憶體',
   card_node_informtaion_item_roles: '角色',
-
-  card_node_information_item_disk_capacity: '總容量',
+  card_node_informtaion_item_status: '狀態',
   card_node_information_title_disk: '硬碟資訊',
   card_node_information_title_network: '網路資訊',
-
   description_cluster_list_empty_subtitle: '您必須先建立一個叢集，請點擊以下按鈕新建一個叢集',
   description_cluster_list_empty_title: '你還沒有任何叢集',
   dialog_install_addon_description: '確定是否要安裝 ',
@@ -137,12 +131,10 @@ export default {
   notify_message_nodes_roles_update_success: '節點角色更新成功',
   notify_message_setting_update_success: '更新成功',
   notify_message_switch_language_success: '切換中文成功',
-
   page_401_content_subtitle: '你沒有權限訪問該頁面',
   page_401_content_title: '如有任何問題請聯繫管理員',
   page_404_content_subtitle: '請檢查您輸入的網址是否正確，請點擊以下按鈕返回首頁',
   page_404_content_title: '網頁不存在......',
-
   page_title_cluster_list: '我的叢集環境',
   page_title_nodes_list: '我的節點',
   route_title_catalogPage: '應用程式',
@@ -163,9 +155,9 @@ export default {
   table_agent_tabpane_role_title_k8s_etcd: 'Kubernetes Etcd',
   table_agent_tabpane_role_title_k8s_master: 'Kubernetes Master',
   table_agent_tabpane_role_title_k8s_node: 'Kubernetes Node',
+  table_agent_tabpane_status_lost: '遺失',
   table_agent_tabpane_status_pending: '處理中...',
   table_agent_tabpane_status_running: '執行中',
-
   table_node_information_disk_title_mounted: '掛載',
   table_node_information_disk_title_name: '名稱',
   table_node_information_disk_title_size: '容量',
@@ -173,7 +165,6 @@ export default {
   table_node_information_network_title_ipv4: 'IPv4',
   table_node_information_network_title_ipv6: 'IPv6',
   table_node_information_network_title_name: '名稱',
-
   tabpane_page_title_addons: '插件',
   tabpane_page_title_nodes: '角色分配',
   tabpane_page_title_setting_kubernetes: 'Kubernetes 設定',

@@ -123,9 +123,13 @@ export default {
           title: this.translateKey('table_agent_tabpane_columns_title_status'),
           key: 'status',
           render: (h, params) => {
+            var color = '#19be6b'
+            if (params.row.status.toLowerCase() !== 'running') {
+              color = '#eb4d4b'
+            }
             return h('div', {
               style: {
-                color: '#19be6b'
+                color: color
               }
             }, this.translateKey('table_agent_tabpane_status_' + params.row.status.toLowerCase()))
           }
@@ -190,9 +194,13 @@ export default {
           title: this.translateKey('table_agent_tabpane_columns_title_status'),
           key: 'status',
           render: (h, params) => {
+            var color = '#19be6b'
+            if (params.row.status.toLowerCase() !== 'running') {
+              color = '#eb4d4b'
+            }
             return h('div', {
               style: {
-                color: '#19be6b'
+                color: color
               }
             }, this.translateKey('table_agent_tabpane_status_' + params.row.status.toLowerCase()))
           }
